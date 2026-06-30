@@ -1,0 +1,28 @@
+{
+  "posts": [
+    {
+      "title": "What Chapter One Could Feel Like",
+      "date": "2026-06-29",
+      "category": "Chapter One",
+      "excerpt": "Picnics, bike rides, live music, card games, short films and exploring somewhere new: the first version is being shaped by Trendies.",
+      "image": "assets/chapter-road-friends.jpg",
+      "alt": "Trendies chapter scene"
+    },
+    {
+      "title": "Why the Flag Wall Matters",
+      "date": "2026-06-29",
+      "category": "Community",
+      "excerpt": "Every flag is a signal that someone, somewhere, wants to make new friends and expand their circle in real life.",
+      "image": "assets/beach-laugh.jpg",
+      "alt": "Trendies chapter scene"
+    },
+    {
+      "title": "A Note on Safe Public Plans",
+      "date": "2026-06-29",
+      "category": "Safety",
+      "excerpt": "Chapter One starts with daylight, public places, clear plans and the option to bring a friend or arrive alone.",
+      "image": "assets/chapter-cabin-hoodies.jpg",
+      "alt": "Trendies chapter scene"
+    }
+  ]
+}

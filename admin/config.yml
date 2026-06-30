@@ -1,0 +1,169 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "assets/uploads"
+public_folder: "/assets/uploads"
+site_url: "https://trendiesglobal.com"
+display_url: "https://trendiesglobal.com"
+logo_url: "https://trendiesglobal.com/assets/beach-selfie-laugh.jpg"
+
+collections:
+  - name: "homepage"
+    label: "Homepage"
+    files:
+      - name: "sections"
+        label: "Homepage sections and photos"
+        file: "data/site-content.json"
+        format: "json"
+        fields:
+          - label: "Hero"
+            name: "hero"
+            widget: "object"
+            fields:
+              - {label: "Small label", name: "kicker", widget: "string"}
+              - {label: "Headline", name: "title", widget: "string"}
+              - {label: "Intro text", name: "lede", widget: "text"}
+              - label: "Proof points"
+                name: "proof_points"
+                widget: "list"
+                field: {label: "Point", name: "point", widget: "string"}
+              - label: "Images"
+                name: "images"
+                widget: "object"
+                fields:
+                  - label: "Main hero image"
+                    name: "main"
+                    widget: "object"
+                    fields:
+                      - {label: "Photo", name: "src", widget: "image"}
+                      - {label: "Alt text", name: "alt", widget: "string"}
+                      - {label: "Caption", name: "caption", widget: "string"}
+                  - label: "Small image one"
+                    name: "side_one"
+                    widget: "object"
+                    fields:
+                      - {label: "Photo", name: "src", widget: "image"}
+                      - {label: "Alt text", name: "alt", widget: "string"}
+                      - {label: "Caption", name: "caption", widget: "string"}
+                  - label: "Small image two"
+                    name: "side_two"
+                    widget: "object"
+                    fields:
+                      - {label: "Photo", name: "src", widget: "image"}
+                      - {label: "Alt text", name: "alt", widget: "string"}
+                      - {label: "Caption", name: "caption", widget: "string"}
+                  - label: "Small image three"
+                    name: "side_three"
+                    widget: "object"
+                    fields:
+                      - {label: "Photo", name: "src", widget: "image"}
+                      - {label: "Alt text", name: "alt", widget: "string"}
+                      - {label: "Caption", name: "caption", widget: "string"}
+          - label: "Live hub cards"
+            name: "hub_cards"
+            widget: "list"
+            fields:
+              - {label: "Title", name: "title", widget: "string"}
+              - {label: "Body", name: "body", widget: "text"}
+          - label: "Vision"
+            name: "vision"
+            widget: "object"
+            fields:
+              - {label: "Small label", name: "kicker", widget: "string"}
+              - {label: "Headline", name: "title", widget: "string"}
+              - label: "Paragraphs"
+                name: "paragraphs"
+                widget: "list"
+                field: {label: "Paragraph", name: "paragraph", widget: "text"}
+              - label: "Idea cards"
+                name: "cards"
+                widget: "list"
+                fields:
+                  - {label: "Title", name: "title", widget: "string"}
+                  - {label: "Body", name: "body", widget: "text"}
+          - label: "Join section"
+            name: "join"
+            widget: "object"
+            fields:
+              - {label: "Small label", name: "kicker", widget: "string"}
+              - {label: "Headline", name: "title", widget: "string"}
+              - {label: "Body", name: "body", widget: "text"}
+              - {label: "Data note", name: "data_note", widget: "text"}
+          - label: "Coming-of-age field guide"
+            name: "guide"
+            widget: "object"
+            fields:
+              - {label: "Small label", name: "kicker", widget: "string"}
+              - {label: "Headline", name: "title", widget: "string"}
+              - {label: "Body", name: "body", widget: "text"}
+              - {label: "Instagram channel URL", name: "instagram_channel", widget: "string"}
+              - label: "Guide steps"
+                name: "steps"
+                widget: "list"
+                fields:
+                  - {label: "Title", name: "title", widget: "string"}
+                  - {label: "Body", name: "body", widget: "text"}
+          - label: "Flag wall section"
+            name: "map"
+            widget: "object"
+            fields:
+              - {label: "Small label", name: "kicker", widget: "string"}
+              - {label: "Headline", name: "title", widget: "string"}
+              - {label: "Body", name: "body", widget: "text"}
+          - label: "Wall section"
+            name: "wall"
+            widget: "object"
+            fields:
+              - {label: "Small label", name: "kicker", widget: "string"}
+              - {label: "Headline", name: "title", widget: "string"}
+              - {label: "Body", name: "body", widget: "text"}
+              - label: "Prompt buttons"
+                name: "prompts"
+                widget: "list"
+                field: {label: "Prompt", name: "prompt", widget: "text"}
+          - label: "Story"
+            name: "story"
+            widget: "object"
+            fields:
+              - {label: "Small label", name: "kicker", widget: "string"}
+              - {label: "Headline", name: "title", widget: "string"}
+              - label: "Paragraphs"
+                name: "paragraphs"
+                widget: "list"
+                field: {label: "Paragraph", name: "paragraph", widget: "text"}
+              - label: "Gallery images"
+                name: "images"
+                widget: "list"
+                fields:
+                  - {label: "Photo", name: "src", widget: "image"}
+                  - {label: "Alt text", name: "alt", widget: "string"}
+                  - {label: "Caption", name: "caption", widget: "string"}
+          - label: "Partners"
+            name: "partners"
+            widget: "object"
+            fields:
+              - {label: "Small label", name: "kicker", widget: "string"}
+              - {label: "Headline", name: "title", widget: "string"}
+              - {label: "Body", name: "body", widget: "text"}
+              - label: "Cards"
+                name: "cards"
+                widget: "list"
+                fields:
+                  - {label: "Title", name: "title", widget: "string"}
+                  - {label: "Body", name: "body", widget: "text"}
+      - name: "blog"
+        label: "Blog posts"
+        file: "data/blog-posts.json"
+        format: "json"
+        fields:
+          - label: "Posts"
+            name: "posts"
+            widget: "list"
+            fields:
+              - {label: "Title", name: "title", widget: "string"}
+              - {label: "Date", name: "date", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false}
+              - {label: "Category", name: "category", widget: "string"}
+              - {label: "Excerpt", name: "excerpt", widget: "text"}
+              - {label: "Image", name: "image", widget: "image"}
+              - {label: "Alt text", name: "alt", widget: "string"}

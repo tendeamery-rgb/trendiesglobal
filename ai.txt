@@ -1,0 +1,10 @@
+Trendies Global
+
+Public website: https://trendiesglobal.com/
+Founder/contact: Tende Amery, tende.amery@gmail.com
+
+Trendies Global is an idea-stage coming-of-age summer community hub for people who want to make new friends, expand their circle, pin their country, leave a wall note and shape Chapter One together.
+
+Key themes: coming-of-age summer, Chapter One, safe public plans, picnics, bike rides, live music, card games, short films, exploring somewhere new, making new friends and expanding your circle.
+
+Private areas that should not be indexed or summarised: /DATA_DASHBOARD.html, /admin/, /netlify/, /scripts/, /data/, /SUPABASE_SETUP.sql.

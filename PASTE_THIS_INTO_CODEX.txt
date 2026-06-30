@@ -1,0 +1,79 @@
+Read `AGENTS.md` and `START_HERE_FOR_CODEX.md` first.
+
+This is the Trendies Global launch project. I need this live today/tomorrow latest.
+
+The current layout is approved. Do not redesign the site. Do not add a countdown intro. Do not make the homepage longer. Only fix launch blockers, deployment issues, backend issues, form issues, dashboard issues, YouTube issues, SEO bugs, and anything stopping the site from going live.
+
+First actions:
+1. Run `npm test`.
+2. Fix any failing tests.
+3. Confirm Netlify deployment settings are correct.
+4. Confirm `/api/*` redirects to Netlify Functions.
+5. Confirm the interest form does not fail with “Failed to fetch” once deployed on Netlify.
+6. Confirm the YouTube video is muted, looped and autoplaying where browsers allow it.
+7. Confirm the dashboard is noindex/private.
+
+Technical requirements:
+- Netlify publish directory: `.`
+- Netlify functions directory: `netlify/functions`
+- Keep `netlify.toml`
+- Keep `_redirects`
+- Functions must compile:
+  - submit-interest.js
+  - submit-map-pin.js
+  - country-pins.js
+  - submit-note.js
+  - approved-notes.js
+  - dashboard-data.js
+  - export-interests.js
+
+Backend requirements:
+- Interest form saves to Supabase.
+- Every interest signup emails `tende.amery@gmail.com`.
+- Interest responses are categorised into:
+  - region
+  - respondent_type
+  - partnership_type
+  - intent_strength
+  - activity_tags
+  - safety_tags
+  - country
+  - city
+- Country flag pins save and update counts.
+- Wall notes save as pending.
+- DATA_DASHBOARD.html loads live data using `/api/dashboard-data?token=EXPORT_SECRET`.
+- CSV export works using `/api/export-interests?token=EXPORT_SECRET`.
+
+Content rules:
+- Keep the language:
+  - coming-of-age summer
+  - Chapter One
+  - idea-stage
+  - shaped by Trendies
+  - picnics
+  - bike rides
+  - live music
+  - card games
+  - short films
+  - exploring somewhere new
+  - making new friends
+  - expanding your circle
+- Avoid the banned youth-leadership wording.
+- Do not overpromise confirmed events, venues, dates or cities.
+- Keep safe/public/daylight wording.
+
+Required Netlify environment variables:
+- SUPABASE_URL
+- SUPABASE_SERVICE_ROLE_KEY
+- RESEND_API_KEY
+- EMAIL_FROM
+- APPROVAL_EMAIL=tende.amery@gmail.com
+- APPROVAL_SECRET
+- EXPORT_SECRET
+
+Before finishing:
+1. Run `npm test` again.
+2. Summarise exactly what changed.
+3. Tell me exactly what to add in Netlify.
+4. Tell me exactly what to run in Supabase.
+5. Give me final test links for the live Netlify deployment.

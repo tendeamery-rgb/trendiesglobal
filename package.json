@@ -1,0 +1,11 @@
+{
+  "name": "trendies-global",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "test": "node scripts/check.js && node scripts/function-smoke.js",
+    "check": "node scripts/check.js"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}

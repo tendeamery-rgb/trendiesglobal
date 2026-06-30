@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+Allow: /llms.txt
+Allow: /ai.txt
+Disallow: /DATA_DASHBOARD.html
+Disallow: /admin/
+Disallow: /netlify/
+Disallow: /scripts/
+Disallow: /SUPABASE_SETUP.sql
+
+Sitemap: https://trendiesglobal.com/sitemap.xml

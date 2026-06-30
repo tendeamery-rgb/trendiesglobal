@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8" />
+  <meta name="robots" content="noindex,nofollow" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Trendies Data Dashboard</title>
+  <style>
+    *{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,sans-serif;background:#f6eadb;color:#151312}
+    main{width:min(1200px,calc(100% - 1.2rem));margin:auto;padding:1rem 0 3rem}
+    header{display:flex;justify-content:space-between;gap:1rem;align-items:center;padding:1rem 0;position:sticky;top:0;background:rgba(246,234,219,.92);z-index:3}
+    h1{font-family:Georgia,serif;font-size:clamp(2.2rem,6vw,5rem);line-height:.82;margin:.2rem 0;letter-spacing:-.06em}
+    .token{display:flex;gap:.5rem;flex-wrap:wrap}.token input{min-width:280px}
+    input,button{border:1px solid rgba(21,19,18,.12);border-radius:999px;padding:.75rem .9rem;font:inherit}
+    button,a.button{background:#151312;color:#fff8ef;border:0;border-radius:999px;padding:.75rem .9rem;text-decoration:none;font-weight:900;cursor:pointer}
+    .cards{display:grid;grid-template-columns:repeat(5,1fr);gap:.6rem;margin:1rem 0}.card{background:rgba(255,248,239,.8);border:1px solid rgba(21,19,18,.1);border-radius:1.2rem;padding:1rem;box-shadow:0 12px 28px rgba(21,19,18,.06)}
+    .card strong{display:block;font-size:2rem}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.7rem}.panel h2{margin:.2rem 0 .6rem;font-family:Georgia,serif;font-size:1.8rem}.pill{display:flex;justify-content:space-between;gap:1rem;border-bottom:1px solid rgba(21,19,18,.08);padding:.42rem 0}
+    table{width:100%;border-collapse:collapse;background:rgba(255,248,239,.82);border-radius:1rem;overflow:hidden}th,td{text-align:left;padding:.55rem;border-bottom:1px solid rgba(21,19,18,.08);font-size:.86rem;vertical-align:top}th{background:#151312;color:#fff8ef;position:sticky;top:92px}
+    .wide{grid-column:1/-1}.status{font-weight:800;color:#775100}.small{opacity:.65;font-size:.85rem}@media(max-width:900px){.cards,.grid{grid-template-columns:1fr 1fr}th{position:static}}@media(max-width:620px){.cards,.grid{grid-template-columns:1fr}.token input{min-width:0;width:100%}}
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <div>
+        <p class="small">Private / noindex</p>
+        <h1>Trendies Data</h1>
+        <p id="status" class="status">Enter dashboard token to load categorised live submissions.</p>
+      </div>
+      <div class="token">
+        <input id="token" placeholder="Dashboard token" />
+        <button id="save">Load</button>
+        <a id="csv" class="button" href="#">Download CSV</a>
+      </div>
+    </header>
+
+    <section class="cards" id="totals"></section>
+
+    <section class="grid">
+      <div class="card panel"><h2>Regions</h2><div id="region"></div></div>
+      <div class="card panel"><h2>People types</h2><div id="respondent_type"></div></div>
+      <div class="card panel"><h2>Partnerships</h2><div id="partnership_type"></div></div>
+      <div class="card panel"><h2>Activities</h2><div id="activity_tags"></div></div>
+      <div class="card panel"><h2>Safety needs</h2><div id="safety_tags"></div></div>
+      <div class="card panel"><h2>Top countries</h2><div id="countries"></div></div>
+      <div class="card panel wide"><h2>Country flag pins</h2><div id="country_pins"></div></div>
+    </section>
+
+    <section class="card panel" style="margin-top:.8rem">
+      <h2>Latest categorised signups</h2>
+      <div style="overflow:auto">
+        <table>
+          <thead><tr><th>Time</th><th>Name</th><th>Email</th><th>Place</th><th>Type</th><th>AI / summary</th><th>Activities</th><th>Safety</th><th>Help / partnership</th></tr></thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="card panel" style="margin-top:.8rem">
+      <h2>Latest wall notes</h2>
+      <div id="wallNotes"></div>
+    </section>
+  </main>
+
+<script>
+const $ = s => document.querySelector(s);
+let token = localStorage.getItem("trendies-dashboard-token") || new URLSearchParams(location.search).get("token") || "";
+$("#token").value = token;
+
+function pills(items, max=10){
+  return (items || []).slice(0,max).map(x => `<div class="pill"><span>${esc(x.label || x.country || "Unknown")}</span><strong>${esc(x.count)}</strong></div>`).join("") || "<p class='small'>No data yet.</p>";
+}
+function esc(v){ return String(v ?? "").replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
+
+function apiPathV63(path){
+  return path;
+}
+async function fetchDashboardData(token){
+  const paths = [
+    "/api/dashboard-data?token=" + encodeURIComponent(token),
+    "/.netlify/functions/dashboard-data?token=" + encodeURIComponent(token)
+  ];
+  let last;
+  for(const path of paths){
+    try{
+      const res = await fetch(path);
+      const data = await res.json().catch(()=>({}));
+      if(!res.ok || !data.ok) throw new Error(data.error || `Backend returned ${res.status}`);
+      return data;
+    }catch(e){ last = e; }
+  }
+  throw last || new Error("Could not load dashboard");
+}
+async function load(){
+  token = $("#token").value.trim();
+  if(!token){ $("#status").textContent = "Enter dashboard token."; return; }
+  localStorage.setItem("trendies-dashboard-token", token);
+  $("#csv").href = "/api/export-interests?token=" + encodeURIComponent(token);
+  $("#status").textContent = "Loading live data...";
+  try{
+    const data = await fetchDashboardData(token);
+
+    $("#status").textContent = "Live. Last refreshed " + new Date(data.refreshed_at).toLocaleString();
+    $("#totals").innerHTML = Object.entries(data.totals).map(([k,v]) => `<div class="card"><span>${k.replaceAll("_"," ")}</span><strong>${v}</strong></div>`).join("");
+
+    ["region","respondent_type","partnership_type","activity_tags","safety_tags","countries"].forEach(k => {
+      $("#" + k).innerHTML = pills(data.breakdowns[k]);
+    });
+    $("#country_pins").innerHTML = pills(data.country_pins, 18);
+
+    $("#rows").innerHTML = data.latest_interests.map(r => `
+      <tr>
+        <td>${esc(new Date(r.created_at).toLocaleString())}</td>
+        <td>${esc(r.name)}<br><span class="small">${esc(r.social)}</span></td>
+        <td>${esc(r.email)}</td>
+        <td>${esc(r.city)}, ${esc(r.country)}<br><span class="small">${esc(r.region)}</span></td>
+        <td>${esc(r.respondent_type)}<br><span class="small">${esc(r.intent_strength)}</span></td>
+        <td>${esc(r.ai_summary || "Rule-sorted signup")}<br><span class="small">${esc(r.ai_priority || r.categorisation_source || "rules")}${r.ai_tags && r.ai_tags.length ? " / " + esc(r.ai_tags.join(", ")) : ""}</span></td>
+        <td>${esc((r.activity_tags||[]).join(", "))}</td>
+        <td>${esc((r.safety_tags||[]).join(", "))}</td>
+        <td>${esc(r.help_build || r.partnership_type || "")}</td>
+      </tr>`).join("");
+
+    $("#wallNotes").innerHTML = (data.latest_wall_notes || []).slice(0, 30).map(n => `
+      <div class="pill"><span>${esc(n.note_censored || n.note || "")}<br><span class="small">${esc(n.country || "")} / ${esc(n.category || n.vibe || "wall")} / ${esc(n.status || "")}</span></span><strong>${esc(new Date(n.created_at).toLocaleDateString())}</strong></div>
+    `).join("") || "<p class='small'>No wall notes yet.</p>";
+  }catch(e){
+    $("#status").textContent = e.message;
+  }
+}
+$("#save").addEventListener("click", load);
+if(token) load();
+setInterval(() => { if($("#token").value.trim()) load(); }, 30000);
+</script>
+</body>
+</html>

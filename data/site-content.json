@@ -1,0 +1,169 @@
+{
+  "hero": {
+    "kicker": "Chapter One is open",
+    "title": "Your coming-of-age summer, not alone.",
+    "lede": "Join the early interest list for Trendies Global — a community for making new friends, expanding your circle and shaping real-life Chapter One plans together.",
+    "proof_points": [
+      "interest list",
+      "safe public plans",
+      "global flag wall",
+      "shaped together"
+    ],
+    "images": {
+      "main": {
+        "src": "assets/beach-selfie-laugh.jpg",
+        "alt": "Tende laughing by the sea",
+        "caption": ""
+      },
+      "side_one": {
+        "src": "",
+        "alt": "",
+        "caption": ""
+      },
+      "side_two": {
+        "src": "",
+        "alt": "",
+        "caption": ""
+      },
+      "side_three": {
+        "src": "",
+        "alt": "",
+        "caption": ""
+      }
+    }
+  },
+  "hub_cards": [
+    {
+      "title": "Join the interest list",
+      "body": "Tell us where you are and what you would show up for."
+    },
+    {
+      "title": "Pin your flag",
+      "body": "Show where the first Trendies are appearing."
+    },
+    {
+      "title": "Leave a note",
+      "body": "Say what your coming-of-age summer should feel like."
+    }
+  ],
+  "vision": {
+    "kicker": "Coming-of-age summer chapters",
+    "title": "A community for having your coming-of-age chapter together.",
+    "paragraphs": [
+      "Trendies is idea-stage and shaped by Trendies: a place for people who want their coming of age, but do not want to do it alone."
+    ],
+    "cards": [
+      {
+        "title": "Picnics + card games",
+        "body": "Low-pressure daylight plans where people can arrive alone and still feel held by the group."
+      },
+      {
+        "title": "Bike rides + exploring",
+        "body": "Moving through a city together: parks, rivers, galleries, markets and somewhere new."
+      },
+      {
+        "title": "Live music + short films",
+        "body": "Creative scenes, mini shoots, group memories and content that makes the chapter feel alive."
+      },
+      {
+        "title": "New friends with drive",
+        "body": "At the heart, this is for people who want to expand their group and make new friends."
+      }
+    ]
+  },
+  "join": {
+    "kicker": "Join the interest list",
+    "title": "Tell us where Chapter One should start.",
+    "body": "Add your name if you want your coming-of-age summer, not alone. Your answers show where people are, what plans they want, and what would make it feel safe.",
+    "data_note": "This is an interest list, not a ticket or confirmed event."
+  },
+  "guide": {
+    "kicker": "Field guide",
+    "title": "How to have your coming of age.",
+    "body": "Less perfect movie scene, more tiny brave yeses: leave the house, pick somewhere public, bring a snack, and let the day become a story.",
+    "instagram_channel": "https://www.instagram.com/channel/AbYv47ILon7Ws8HJ/",
+    "steps": [
+      {
+        "title": "Choose a daylight plan",
+        "body": "Park picnic, gallery walk, market loop, beach day, bike ride, live music, or card games on a blanket."
+      },
+      {
+        "title": "Make it easy to join",
+        "body": "Share a clear time, public location, what to bring, and whether people can arrive alone."
+      },
+      {
+        "title": "Collect proof you lived",
+        "body": "Take photos, film tiny clips, write one line on the wall, and save the details that felt cinematic."
+      },
+      {
+        "title": "Expand your circle",
+        "body": "Talk to the person who also came alone, swap socials, and join the Instagram channel for updates."
+      }
+    ]
+  },
+  "map": {
+    "kicker": "Live global flag wall",
+    "title": "Pin your country. Watch the wall grow.",
+    "body": "Choose your country. Your flag joins the wall and the count updates live as Trendies join from around the world."
+  },
+  "wall": {
+    "kicker": "Anonymous wall",
+    "title": "Leave a line for the summer.",
+    "body": "Notes save as pending for review. The public wall stays warm, safe and readable.",
+    "prompts": [
+      "My coming-of-age summer would feel like picnics, card games, and people who actually make plans.",
+      "I would come if it was daylight, public, clear, and okay to arrive alone.",
+      "I want to make new friends and expand my circle with people who have drive."
+    ]
+  },
+  "story": {
+    "kicker": "Dear future Trendies,",
+    "title": "This is our prologue.",
+    "paragraphs": [
+      "For me, coming of age is picnics, bike rides, live music, card games, short films, exploring somewhere new, and people who make the day feel bigger.",
+      "Trendies is for the in-between: back home, between chapters, new city, new life, or simply ready to expand your circle.",
+      "This is born out of a desire to have our coming of age, not just watch it happen online."
+    ],
+    "images": [
+      {
+        "src": "assets/friends-cake.jpg",
+        "alt": "Friends with cake",
+        "caption": "friendship"
+      },
+      {
+        "src": "assets/seoul-boat-heart.jpg",
+        "alt": "Boat heart moment",
+        "caption": "somewhere new"
+      },
+      {
+        "src": "assets/rio-beach.jpg",
+        "alt": "Beach travel moment",
+        "caption": "sun"
+      },
+      {
+        "src": "assets/waterfall.jpg",
+        "alt": "Waterfall travel moment",
+        "caption": "adventure"
+      }
+    ]
+  },
+  "partners": {
+    "kicker": "Help make this real",
+    "title": "Help create this reality.",
+    "body": "Trendies needs photographers, filmmakers, city connectors, student societies, venues, brands, organisers, designers, sponsors and friends who want to help create a coming-of-age summer offline.",
+    "cards": [
+      {
+        "title": "Brands / sponsors",
+        "body": "Support safe public plans, city chapters, content and launch moments."
+      },
+      {
+        "title": "City helpers",
+        "body": "Suggest places, bring friends, help shape a chapter in your city or country."
+      },
+      {
+        "title": "Creative partners",
+        "body": "Photo, film, design, social content, storytelling and launch visuals."
+      }
+    ]
+  }
+}
