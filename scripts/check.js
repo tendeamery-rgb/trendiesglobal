@@ -15,8 +15,13 @@ const required = [
   "data/blog-posts.json",
   "robots.txt",
   "sitemap.xml",
+  "favicon.svg",
+  "site.webmanifest",
   "llms.txt",
   "ai.txt",
+  "google-sheets-sync.gs",
+  "AUTOMATIC_DATA_SPREADSHEET_SETUP.md",
+  "GOOGLE_SEARCH_SETUP.md",
   "netlify.toml",
   "_redirects",
   "netlify/functions/submit-interest.js",
@@ -61,6 +66,8 @@ const admin = fs.readFileSync(path.join(root, "admin/index.html"), "utf8");
 const robots = fs.readFileSync(path.join(root, "robots.txt"), "utf8");
 const netlify = fs.readFileSync(path.join(root, "netlify.toml"), "utf8");
 const sql = fs.readFileSync(path.join(root, "SUPABASE_SETUP.sql"), "utf8");
+const manifest = fs.readFileSync(path.join(root, "site.webmanifest"), "utf8");
+const sheetsSync = fs.readFileSync(path.join(root, "google-sheets-sync.gs"), "utf8");
 const llms = fs.readFileSync(path.join(root, "llms.txt"), "utf8");
 const aiTxt = fs.readFileSync(path.join(root, "ai.txt"), "utf8");
 const joinPhotos = (index.match(/<aside[^>]*class="join-photos"[\s\S]*?<\/aside>/) || [""])[0];
@@ -100,6 +107,8 @@ const checks = [
   ["robots disallows admin", /Disallow:\s*\/admin\//i.test(robots)],
   ["ai summary files exist", /Trendies Global/i.test(llms) && /Trendies Global/i.test(aiTxt) && /Allow:\s*\/llms\.txt/i.test(robots) && /Allow:\s*\/ai\.txt/i.test(robots)],
   ["canonical domain is trendiesglobal.com", /https:\/\/trendiesglobal\.com\//i.test(index) && /https:\/\/trendiesglobal\.com\/sitemap\.xml/i.test(robots)],
+  ["favicon and manifest configured", /<link[^>]+href="\/favicon\.svg"[^>]+rel="icon"/i.test(index) && /<link[^>]+href="\/site\.webmanifest"[^>]+rel="manifest"/i.test(index) && /Trendies Global/i.test(manifest)],
+  ["google sheets automation exists", /setupTrendiesAutoSync/.test(sheetsSync) && /Clean Dataset/.test(sheetsSync) && /Dashboard/.test(sheetsSync) && /newChart\(\)/.test(sheetsSync)],
   ["netlify api redirect exists", /from\s*=\s*"\/api\/\*"/.test(netlify) && /to\s*=\s*"\/\.netlify\/functions\/:splat"/.test(netlify)],
   ["www redirects to apex domain", /www\.trendiesglobal\.com/.test(netlify) && /https:\/\/trendiesglobal\.com\/:splat/.test(netlify)],
   ["supabase interest columns exist", ["name","email","age","social","city","country","wants_updates","activity_tags","answers","user_agent","ip_hash","region","respondent_type","partnership_type","intent_strength","safety_tags","categorisation_source","ai_summary","ai_priority","ai_tags"].every((col) => new RegExp(`\\b${col}\\b`).test(sql))],

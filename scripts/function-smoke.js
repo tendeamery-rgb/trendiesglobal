@@ -83,6 +83,7 @@ async function run() {
   const {handler: submitInterest} = require("../netlify/functions/submit-interest");
   const {handler: submitNote} = require("../netlify/functions/submit-note");
   const {handler: dashboardData} = require("../netlify/functions/dashboard-data");
+  const {handler: exportInterests} = require("../netlify/functions/export-interests");
 
   const interest = await submitInterest(event("POST", {
     name:"A Test",
@@ -131,6 +132,11 @@ async function run() {
   assert.equal(dashboardBody.latest_interests[0].respondent_type, "creative collaborator");
   assert.equal(dashboardBody.latest_interests[0].categorisation_source, "rules");
   assert(dashboardBody.breakdowns.activity_tags.length);
+
+  const csvExport = await exportInterests(event("GET", null, "owner-secret"));
+  assert.equal(csvExport.statusCode, 200);
+  assert(csvExport.body.includes("created_at,name,email"));
+  assert(csvExport.body.includes("creative collaborator"));
 
   console.log("Function smoke checks passed.");
 }

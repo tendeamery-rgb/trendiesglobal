@@ -2,6 +2,8 @@ User-agent: *
 Allow: /
 Allow: /llms.txt
 Allow: /ai.txt
+Allow: /favicon.svg
+Allow: /site.webmanifest
 Disallow: /DATA_DASHBOARD.html
 Disallow: /admin/
 Disallow: /netlify/

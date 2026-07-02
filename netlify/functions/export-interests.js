@@ -19,7 +19,16 @@ exports.handler = async (event) => {
   }
 
   try{
-    const rows = await supabase("trendies_interest_responses?select=*&order=created_at.desc&limit=10000",{method:"GET"});
+    const requestedLimit = Number(event.queryStringParameters && event.queryStringParameters.limit);
+    const requestedOffset = Number(event.queryStringParameters && event.queryStringParameters.offset);
+    const limit = Number.isFinite(requestedLimit) && requestedLimit > 0
+      ? Math.min(Math.floor(requestedLimit), 5000)
+      : 10000;
+    const offset = Number.isFinite(requestedOffset) && requestedOffset > 0
+      ? Math.floor(requestedOffset)
+      : 0;
+
+    const rows = await supabase(`trendies_interest_responses?select=*&order=created_at.desc&limit=${limit}&offset=${offset}`,{method:"GET"});
     const headers = [
       "created_at","name","email","age","social","city","country","region",
       "respondent_type","partnership_type","intent_strength","activity_tags","safety_tags",
@@ -41,7 +50,8 @@ exports.handler = async (event) => {
       statusCode:200,
       headers:{
         "Content-Type":"text/csv; charset=utf-8",
-        "Content-Disposition":"attachment; filename=trendies-interest-responses.csv"
+        "Content-Disposition":"attachment; filename=trendies-interest-responses.csv",
+        "Cache-Control":"no-store"
       },
       body:lines.join("\n")
     };

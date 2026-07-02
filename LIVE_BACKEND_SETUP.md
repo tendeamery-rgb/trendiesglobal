@@ -12,13 +12,16 @@ EXPORT_SECRET=make_a_different_long_random_dashboard_token
 
 # Optional AI summaries for the private dashboard
 OPENAI_API_KEY=your_openai_api_key
-OPENAI_CATEGORISATION_MODEL=gpt-5.5
+OPENAI_CATEGORISATION_MODEL=gpt-5.4-mini
 AI_TIMEOUT_MS=5000
+
+# Optional after Google Sheets is set up
+SEND_INTEREST_EMAILS=false
 
 Run SUPABASE_SETUP.sql in Supabase SQL Editor.
 
 Country flag wall submissions go live immediately.
-Interest forms save to Supabase, get sorted into readable categories, and email Tende.
+Interest forms save to Supabase, get sorted into readable categories, and email Tende unless `SEND_INTEREST_EMAILS=false` is set.
 Wall notes save as pending and can be approved manually in Supabase for now.
 
 The form always creates the core launch categories with built-in rules:
@@ -32,6 +35,8 @@ The form always creates the core launch categories with built-in rules:
 - Country/city
 
 If `OPENAI_API_KEY` is added, the function also asks OpenAI for an owner-friendly `ai_summary`, `ai_priority` and `ai_tags`. If OpenAI is missing, slow or unavailable, the form still works and uses the built-in categories.
+
+For high traffic, use `AUTOMATIC_DATA_SPREADSHEET_SETUP.md` to create a Google Sheet that refreshes from `/api/export-interests?token=...` every 5 minutes. It creates raw data, a clean owner-friendly dataset, breakdowns and dashboard pie charts. This keeps email as optional backup rather than the main data system.
 
 
 # v62 live categorised data dashboard

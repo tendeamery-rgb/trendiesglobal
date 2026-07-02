@@ -16,8 +16,17 @@ APPROVAL_EMAIL=tende.amery@gmail.com
 APPROVAL_SECRET
 EXPORT_SECRET
 
+Optional after launch:
+
+OPENAI_API_KEY
+OPENAI_CATEGORISATION_MODEL=gpt-5.4-mini
+AI_TIMEOUT_MS=5000
+SEND_INTEREST_EMAILS=false
+
 8. Run `SUPABASE_SETUP.sql` in Supabase.
-9. Test:
+9. Use `AUTOMATIC_DATA_SPREADSHEET_SETUP.md` for the live Google Sheet.
+10. Use `GOOGLE_SEARCH_SETUP.md` for sitemap, favicon and indexing.
+11. Test:
 - homepage
 - join form
 - flag wall

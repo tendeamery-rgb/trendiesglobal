@@ -115,7 +115,7 @@ async function aiCategorise(body, ruleCategories){
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        model: process.env.OPENAI_CATEGORISATION_MODEL || "gpt-5.5",
+        model: process.env.OPENAI_CATEGORISATION_MODEL || "gpt-5.4-mini",
         input: [
           {
             role: "system",
@@ -187,27 +187,30 @@ exports.handler = async (event) => {
 
     await supabase("trendies_interest_responses",{method:"POST",body:JSON.stringify(row)});
 
-    await sendEmail(
-      `NEW Trendies signup — ${row.city}, ${row.country} — ${row.respondent_type}`,
-      `<h2>New Trendies Global signup</h2>
-      <p><b>${escapeHTML(row.name)}</b> (${escapeHTML(row.age)}) — ${escapeHTML(row.email)}</p>
-      <p><b>Location:</b> ${escapeHTML(row.city)}, ${escapeHTML(row.country)} / ${escapeHTML(row.region)}</p>
-      <p><b>Respondent type:</b> ${escapeHTML(row.respondent_type)}</p>
-      <p><b>Partnership type:</b> ${escapeHTML(row.partnership_type)}</p>
-      <p><b>Intent:</b> ${escapeHTML(row.intent_strength)}</p>
-      <p><b>Activity tags:</b> ${escapeHTML(row.activity_tags.join(", "))}</p>
-      <p><b>Safety tags:</b> ${escapeHTML(row.safety_tags.join(", "))}</p>
-      <p><b>AI/source:</b> ${escapeHTML(row.categorisation_source)}${row.ai_priority ? " / " + escapeHTML(row.ai_priority) : ""}</p>
-      ${row.ai_summary ? `<p><b>AI summary:</b><br/>${escapeHTML(row.ai_summary)}</p>` : ""}
-      <p><b>Wants updates:</b> ${row.wants_updates ? "Yes" : "No"}</p>
-      <hr/>
-      <p><b>What would make them show up?</b><br/>${escapeHTML(row.answers.show_up_reason || "")}</p>
-      <p><b>Safety needs:</b><br/>${escapeHTML(row.answers.safety_needs || "")}</p>
-      <p><b>Help / partnership:</b><br/>${escapeHTML(row.answers.help_build || "")}</p>`,
-      {required:true}
-    );
+    const shouldEmail = String(process.env.SEND_INTEREST_EMAILS || "true").toLowerCase() !== "false";
+    const emailResult = shouldEmail
+      ? await sendEmail(
+        `NEW Trendies signup — ${row.city}, ${row.country} — ${row.respondent_type}`,
+        `<h2>New Trendies Global signup</h2>
+        <p><b>${escapeHTML(row.name)}</b> (${escapeHTML(row.age)}) — ${escapeHTML(row.email)}</p>
+        <p><b>Location:</b> ${escapeHTML(row.city)}, ${escapeHTML(row.country)} / ${escapeHTML(row.region)}</p>
+        <p><b>Respondent type:</b> ${escapeHTML(row.respondent_type)}</p>
+        <p><b>Partnership type:</b> ${escapeHTML(row.partnership_type)}</p>
+        <p><b>Intent:</b> ${escapeHTML(row.intent_strength)}</p>
+        <p><b>Activity tags:</b> ${escapeHTML(row.activity_tags.join(", "))}</p>
+        <p><b>Safety tags:</b> ${escapeHTML(row.safety_tags.join(", "))}</p>
+        <p><b>AI/source:</b> ${escapeHTML(row.categorisation_source)}${row.ai_priority ? " / " + escapeHTML(row.ai_priority) : ""}</p>
+        ${row.ai_summary ? `<p><b>AI summary:</b><br/>${escapeHTML(row.ai_summary)}</p>` : ""}
+        <p><b>Wants updates:</b> ${row.wants_updates ? "Yes" : "No"}</p>
+        <hr/>
+        <p><b>What would make them show up?</b><br/>${escapeHTML(row.answers.show_up_reason || "")}</p>
+        <p><b>Safety needs:</b><br/>${escapeHTML(row.answers.safety_needs || "")}</p>
+        <p><b>Help / partnership:</b><br/>${escapeHTML(row.answers.help_build || "")}</p>`,
+        {required:false}
+      )
+      : {sent:false, skipped:true};
 
-    return ok({ok:true, categories:{
+    return ok({ok:true, email_sent: !!(emailResult && emailResult.sent), email_skipped: !!(emailResult && emailResult.skipped), categories:{
       region: row.region,
       respondent_type: row.respondent_type,
       partnership_type: row.partnership_type,

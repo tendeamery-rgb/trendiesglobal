@@ -28,3 +28,5 @@ Netlify + Supabase + Resend email.
 - CSV export
 - Live global flag wall
 - Netlify deployment
+- Google Sheets automation
+- Search indexing files

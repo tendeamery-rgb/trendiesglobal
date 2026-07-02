@@ -4,7 +4,7 @@ This is the clean folder for the Trendies Global launch.
 
 If you are uploading to Netlify, use the ZIP named:
 
-`TRENDIES_GLOBAL_FINAL_NETLIFY_FREE_CROP_CHECKED.zip`
+`TRENDIES_GLOBAL_V83_DATA_SEO_GOOGLE_READY.zip`
 
 ## What is included
 
@@ -21,6 +21,8 @@ If you are uploading to Netlify, use the ZIP named:
 - Google search files
 - AI-readable summary files
 - Owner editing guide
+- Google Sheets auto-sync script
+- Google Search setup guide
 
 ## Launch today
 
@@ -30,7 +32,8 @@ If you are uploading to Netlify, use the ZIP named:
 4. Add the Netlify environment variables from `READ_ME_FIRST.md`.
 5. Test the join form, flag wall form and wall note form on the live site.
 6. Open `/DATA_DASHBOARD.html` with your `EXPORT_SECRET`.
-7. Submit `https://trendiesglobal.com/sitemap.xml` to Google Search Console.
+7. Follow `AUTOMATIC_DATA_SPREADSHEET_SETUP.md` to create the live Google Sheet.
+8. Submit `https://trendiesglobal.com/sitemap.xml` to Google Search Console.
 
 ## Latest changes
 
@@ -43,6 +46,9 @@ If you are uploading to Netlify, use the ZIP named:
 - Kept dashboard/admin/private pages noindex while keeping the homepage searchable.
 - Fixed the three interest-form side photos so Netlify does not swap or over-crop them.
 - Added optional AI summaries/priorities for the private dashboard when `OPENAI_API_KEY` is set.
+- Added a favicon and web manifest so Google can replace the old Wix icon after recrawling.
+- Rebuilt the Google Sheets script so it creates a clean dataset, breakdowns and dashboard charts.
+- Added batched CSV export support for the Google Sheet so launch data can keep growing.
 
 
 ## v64 update — photo refresh + anti-overlap

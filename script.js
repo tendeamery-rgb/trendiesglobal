@@ -196,7 +196,7 @@ $("#interestForm")?.addEventListener("submit", async (e)=>{
   try{
     await postJSON("/api/submit-interest", data);
     form.reset();
-    setStatus("#interestStatus","Done — you’re on the list, saved to the dashboard, and sent to Tende.");
+    setStatus("#interestStatus","Done — you’re on the list and saved to the Trendies dashboard.");
   }catch(err){
     setStatus("#interestStatus", err.message || "Could not submit yet.", true);
   }finally{

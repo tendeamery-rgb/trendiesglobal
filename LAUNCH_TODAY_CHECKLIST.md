@@ -15,7 +15,7 @@
   - `EXPORT_SECRET`
 - Optional for AI summaries in the private dashboard:
   - `OPENAI_API_KEY`
-  - `OPENAI_CATEGORISATION_MODEL=gpt-5.5`
+  - `OPENAI_CATEGORISATION_MODEL=gpt-5.4-mini`
   - `AI_TIMEOUT_MS=5000`
 - Test:
   - Join form
@@ -25,7 +25,15 @@
   - Day/night toggle
 - Submit `https://trendiesglobal.com/sitemap.xml` to Google Search Console
 - Use URL Inspection in Google Search Console for `https://trendiesglobal.com/` and request indexing
+- Use `AUTOMATIC_DATA_SPREADSHEET_SETUP.md` to create the live Google Sheet
+- Use `GOOGLE_SEARCH_SETUP.md` to confirm favicon, sitemap and indexing steps
 
+## v83 data + SEO update
+- Added `favicon.svg` and `site.webmanifest` so Google can replace the old Wix icon after recrawling.
+- Updated the Google Sheets automation to create `Interest Forms`, `Clean Dataset`, `Breakdowns` and `Dashboard` tabs.
+- Added dashboard pie charts for signup type, region, intent and activity interests.
+- Added batched CSV export support for larger signup volume.
+- Changed the default optional OpenAI categorisation model to `gpt-5.4-mini` for lower cost and latency.
 
 ## Extra launch copy now included
 - Coming-of-age concept explanation
