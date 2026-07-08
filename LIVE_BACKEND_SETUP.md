@@ -5,10 +5,15 @@ Set these Netlify environment variables:
 SUPABASE_URL=your_supabase_url
 SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
 APPROVAL_EMAIL=tende.amery@gmail.com
+TRENDIES_ADMIN_EMAIL=tende.amery@gmail.com
 RESEND_API_KEY=your_resend_key
-EMAIL_FROM=Trendies <your_verified_sender@yourdomain.com>
+EMAIL_FROM=Trendies Global <hello@trendiesglobal.com>
+TRENDIES_FROM_EMAIL=Trendies Global <hello@trendiesglobal.com>
 APPROVAL_SECRET=make_a_long_random_secret
 EXPORT_SECRET=make_a_different_long_random_dashboard_token
+ADMIN_SECRET=make_a_long_private_admin_password
+SITE_URL=https://trendiesglobal.com
+WEEKLY_DIGEST_ENABLED=false
 
 # Optional AI summaries for the private dashboard
 OPENAI_API_KEY=your_openai_api_key
@@ -18,11 +23,24 @@ AI_TIMEOUT_MS=5000
 # Optional after Google Sheets is set up
 SEND_INTEREST_EMAILS=false
 
-Run SUPABASE_SETUP.sql in Supabase SQL Editor.
+Run `SUPABASE_SETUP.sql` in Supabase SQL Editor after deploying this code.
 
 Country flag wall submissions go live immediately.
-Interest forms save to Supabase, get sorted into readable categories, and email Tende unless `SEND_INTEREST_EMAILS=false` is set.
+Interest forms save to Supabase, dedupe by lower-case email, get sorted into readable categories, sync to Resend contacts, send a welcome email once, and email Tende unless `SEND_INTEREST_EMAILS=false` is set.
 Wall notes save as pending and can be approved manually in Supabase for now.
+Partner enquiries save separately in `trendies_partner_enquiries` and can email Tende unless `SEND_PARTNER_EMAILS=false` is set.
+
+Important Resend setup:
+- Verify `trendiesglobal.com` in Resend.
+- Use a verified sender such as `Trendies Global <hello@trendiesglobal.com>`.
+- Keep `RESEND_API_KEY` only in Netlify environment variables, never in browser code.
+
+New private pages:
+- `/DATA_DASHBOARD.html` is the private CRM dashboard. Use `EXPORT_SECRET`.
+- `/admin/emails` is the private broadcast page. Use `ADMIN_SECRET` or `EXPORT_SECRET`.
+- `/preferences?token=...` lets users change email categories.
+- `/unsubscribe?token=...` unsubscribes users.
+- `/welcome?token=...` is the post-signup success page.
 
 The form always creates the core launch categories with built-in rules:
 
@@ -37,6 +55,15 @@ The form always creates the core launch categories with built-in rules:
 If `OPENAI_API_KEY` is added, the function also asks OpenAI for an owner-friendly `ai_summary`, `ai_priority` and `ai_tags`. If OpenAI is missing, slow or unavailable, the form still works and uses the built-in categories.
 
 For high traffic, use `AUTOMATIC_DATA_SPREADSHEET_SETUP.md` to create a Google Sheet that refreshes from `/api/export-interests?token=...` every 5 minutes. It creates raw data, a clean owner-friendly dataset, breakdowns and dashboard pie charts. This keeps email as optional backup rather than the main data system.
+
+Test after deploy:
+1. Submit the interest form with a new email and confirm the welcome email arrives.
+2. Submit again with the same email and confirm the dashboard updates the same person instead of creating a duplicate.
+3. Open `/welcome` from the redirect and copy the referral link.
+4. Open `/preferences?token=...`, save preferences, then `/unsubscribe?token=...`.
+5. Submit the partner form and confirm it appears in the dashboard.
+6. Open `/admin/emails`, load audience, send a test email to yourself, and only use real send after typing `SEND`.
+7. Open `/DATA_DASHBOARD.html`, enter `EXPORT_SECRET`, confirm totals, charts, filters, CSV and welcome-resend buttons work.
 
 
 # v62 live categorised data dashboard

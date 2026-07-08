@@ -9,18 +9,33 @@
   - `SUPABASE_URL`
   - `SUPABASE_SERVICE_ROLE_KEY`
   - `RESEND_API_KEY`
-  - `EMAIL_FROM`
+  - `EMAIL_FROM=Trendies Global <hello@trendiesglobal.com>`
+  - `TRENDIES_FROM_EMAIL=Trendies Global <hello@trendiesglobal.com>`
   - `APPROVAL_EMAIL=tende.amery@gmail.com`
+  - `TRENDIES_ADMIN_EMAIL=tende.amery@gmail.com`
   - `APPROVAL_SECRET`
   - `EXPORT_SECRET`
+  - `ADMIN_SECRET`
+  - `SITE_URL=https://trendiesglobal.com`
+  - `WEEKLY_DIGEST_ENABLED=false`
 - Optional for AI summaries in the private dashboard:
   - `OPENAI_API_KEY`
   - `OPENAI_CATEGORISATION_MODEL=gpt-5.4-mini`
   - `AI_TIMEOUT_MS=5000`
+- In Resend:
+  - Verify `trendiesglobal.com`
+  - Confirm `hello@trendiesglobal.com` can send
 - Test:
   - Join form
+  - Duplicate join form with the same email
+  - Welcome email and `/welcome` page
+  - Preferences page
+  - Unsubscribe page
   - Country flag wall
   - Wall note form
+  - Partner enquiry form
+  - `/DATA_DASHBOARD.html` CRM filters, CSV and resend-welcome button
+  - `/admin/emails` audience load and test send
   - Mobile layout
   - Day/night toggle
 - Submit `https://trendiesglobal.com/sitemap.xml` to Google Search Console
@@ -34,6 +49,16 @@
 - Added dashboard pie charts for signup type, region, intent and activity interests.
 - Added batched CSV export support for larger signup volume.
 - Changed the default optional OpenAI categorisation model to `gpt-5.4-mini` for lower cost and latency.
+
+## v84 email CRM update
+- Interest signups now dedupe by lower-case email.
+- Signups store consent, 18+ confirmation, referral code, email preferences and unsubscribe token.
+- Opted-in users receive one automatic welcome email.
+- Resend contacts are created or updated server-side only.
+- `/welcome`, `/preferences` and `/unsubscribe` are noindex and token-based.
+- `/admin/emails` lets Tende load eligible recipients, send a test email, and broadcast only after typing `SEND`.
+- `/DATA_DASHBOARD.html` now works as a private CRM with city/country charts, helper filters, partner enquiries and welcome-resend actions.
+- The homepage now has aggregate Chapter One city cards, a partner form and clearer safety/trust language.
 
 ## Extra launch copy now included
 - Coming-of-age concept explanation

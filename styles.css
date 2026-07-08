@@ -494,6 +494,8 @@ p {
 .prompt-deck-section,
 .field-guide,
 .partners-section,
+.chapter-cities-section,
+.trust-section,
 .vision-copy,
 .story-copy,
 .form,
@@ -505,6 +507,8 @@ p {
 .launch-join,
 .prompt-deck-section,
 .field-guide,
+.chapter-cities-section,
+.trust-section,
 .partners-section {
   position: relative;
   overflow: hidden;
@@ -513,7 +517,9 @@ p {
 .feature-card::after,
 .launch-join::after,
 .prompt-deck-section::after,
-.field-guide::after {
+.field-guide::after,
+.chapter-cities-section::after,
+.trust-section::after {
   content: "";
   position: absolute;
   right: -34px;
@@ -537,6 +543,7 @@ p {
 .section-head h2,
 .vision-copy h2,
 .field-guide-copy h2,
+.trust-copy h2,
 .prompt-intro h2,
 .story-copy h2,
 .partners-section h2 {
@@ -594,6 +601,16 @@ p {
 .form {
   display: grid;
   gap: 12px;
+}
+
+.partner-form {
+  grid-column: 1 / -1;
+  display: grid;
+  gap: 12px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: rgba(255,249,239,.76);
 }
 
 .two {
@@ -1210,7 +1227,9 @@ textarea {
 .vision-section,
 .join-panel,
 .story,
-.chapter-notes {
+.chapter-notes,
+.chapter-cities-section,
+.trust-section {
   padding: 16px 0;
 }
 
@@ -1222,6 +1241,7 @@ textarea {
 
 .vision-copy p,
 .field-guide-copy p,
+.trust-copy p,
 .prompt-intro p,
 .story-copy p,
 .partners-section p,
@@ -1233,7 +1253,9 @@ textarea {
 }
 
 .what-could-happen,
-.guide-steps {
+.guide-steps,
+.trust-points,
+.chapter-cities-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 10px;
@@ -1241,8 +1263,63 @@ textarea {
 
 .what-could-happen article,
 .guide-steps article,
+.trust-points article,
+.chapter-cities-grid article,
 .partner-cards article {
   padding: 18px;
+}
+
+.chapter-cities-section {
+  margin: 16px 0;
+}
+
+.chapter-cities-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.chapter-cities-grid article,
+.trust-points article {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: rgba(255,249,239,.72);
+}
+
+.chapter-cities-grid span {
+  display: inline-flex;
+  width: fit-content;
+  margin-bottom: 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-size: .75rem;
+  font-weight: 950;
+  text-transform: uppercase;
+  color: var(--ocean);
+}
+
+.chapter-cities-grid strong,
+.trust-points strong {
+  display: block;
+  font-family: Georgia, serif;
+  font-size: 1.45rem;
+  line-height: 1.05;
+}
+
+.chapter-cities-grid p,
+.chapter-cities-grid small,
+.trust-points span {
+  display: block;
+  margin-top: 10px;
+  color: var(--muted);
+  font-weight: 760;
+  line-height: 1.35;
+}
+
+.trust-section {
+  display: grid;
+  grid-template-columns: minmax(280px, .62fr) minmax(0, 1fr);
+  gap: 16px;
+  margin: 16px 0;
 }
 
 .what-could-happen span,
@@ -1427,6 +1504,7 @@ footer strong {
   .manifesto-section,
   .join-layout,
   .story,
+  .trust-section,
   .partners-section,
   .wall-stage,
   .section-head {
@@ -1473,6 +1551,8 @@ footer strong {
   .prompt-deck-section,
   .field-guide,
   .manifesto-section,
+  .chapter-cities-section,
+  .trust-section,
   .partners-section,
   .vision-copy,
   .story-copy,
@@ -1489,6 +1569,7 @@ footer strong {
   .section-head h2,
   .vision-copy h2,
   .field-guide-copy h2,
+  .trust-copy h2,
   .manifesto-heading h2,
   .prompt-intro h2,
   .story-copy h2,
@@ -1521,6 +1602,8 @@ footer strong {
   .hub-strip,
   .what-could-happen,
   .guide-steps,
+  .trust-points,
+  .chapter-cities-grid,
   .prompt-board,
   .blog-grid,
   .approved-wall,
@@ -2912,5 +2995,83 @@ body::after {
     padding: 8px 4px;
     text-align: center;
     font-size: clamp(.68rem, 2.75vw, .82rem);
+  }
+
+  .coming-age-note {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    overflow: visible;
+    padding: 16px;
+  }
+
+  .note-photo-stack {
+    display: flex;
+    min-height: 0;
+    gap: 12px;
+    overflow-x: auto;
+    padding: 4px 2px 12px;
+    scroll-snap-type: x mandatory;
+  }
+
+  .note-photo-stack img,
+  .note-photo-stack img:nth-child(1),
+  .note-photo-stack img:nth-child(2),
+  .note-photo-stack img:nth-child(3) {
+    position: relative;
+    inset: auto;
+    z-index: auto;
+    flex: 0 0 82%;
+    width: auto;
+    height: clamp(235px, 62vw, 340px);
+    max-height: none;
+    object-fit: contain;
+    object-position: center center !important;
+    transform: none;
+    animation: none;
+    scroll-snap-align: start;
+    background: rgba(255,249,239,.94);
+  }
+
+  .coming-age-copy {
+    align-content: start;
+  }
+
+  .coming-age-copy h2 {
+    font-size: clamp(2.05rem, 9.5vw, 2.8rem);
+    line-height: 1.03;
+  }
+
+  .coming-age-copy > p:not(.kicker),
+  .note-letter p {
+    font-size: 1rem;
+    line-height: 1.58;
+  }
+
+  .coming-age-copy details {
+    max-width: 100%;
+  }
+
+  .coming-age-copy summary {
+    width: 100%;
+    justify-content: space-between;
+    border-radius: 14px;
+  }
+
+  .note-letter {
+    padding: 14px;
+  }
+}
+
+@media (max-width: 420px) {
+  .note-photo-stack img,
+  .note-photo-stack img:nth-child(1),
+  .note-photo-stack img:nth-child(2),
+  .note-photo-stack img:nth-child(3) {
+    flex-basis: 88%;
+    height: 250px;
+  }
+
+  .coming-age-copy h2 {
+    font-size: clamp(1.95rem, 10vw, 2.35rem);
   }
 }

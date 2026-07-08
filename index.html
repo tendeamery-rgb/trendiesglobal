@@ -129,6 +129,8 @@
 </aside>
 <form action="/api/submit-interest" class="card form" id="interestForm" method="POST">
 <input aria-hidden="true" autocomplete="off" class="honeypot" name="website" tabindex="-1" type="text"/>
+<input id="referralSource" name="referred_by" type="hidden"/>
+<input name="signup_source" type="hidden" value="website_interest_form"/>
 <div class="two">
 <label>Name <span>required</span><input name="name" placeholder="Your name" required=""/></label>
 <label>Email <span>required</span><input name="email" placeholder="you@example.com" required="" type="email"/></label>
@@ -160,6 +162,16 @@
 <button class="button primary full" type="submit">Join the interest list</button>
 <p class="status" id="interestStatus" role="status"></p>
 </form>
+</div>
+</section>
+<section class="chapter-cities-section card" id="chapter-cities">
+<div class="section-head mini">
+<p class="kicker">Chapter One cities</p>
+<h2>Where the energy is gathering.</h2>
+<p>These are live aggregate signals from the interest list: city counts only, never private names or emails.</p>
+</div>
+<div aria-live="polite" class="chapter-cities-grid" id="chapterCitiesGrid">
+<article><strong>Loading cities...</strong><span>Chapter One is warming up.</span></article>
 </div>
 </section>
 <section class="manifesto-section card" id="manifesto">
@@ -314,6 +326,19 @@
 <article><span>04</span><strong>Follow the scrapbook</strong><p></p></article>
 </div>
 </section>
+<section class="trust-section card" id="safety">
+<div class="trust-copy">
+<p class="kicker">Safety + trust</p>
+<h2>Public, low-pressure, real-life connection.</h2>
+<p>Trendies is built around public, low-pressure plans: walks, picnics, coffee, card games, creative days and city meetups. It is not a dating app. The aim is to make real-life connection feel less intimidating, not unsafe or overwhelming.</p>
+</div>
+<div class="trust-points">
+<article><strong>Public spaces first</strong><span>No private addresses for early meetups.</span></article>
+<article><strong>Clear plans</strong><span>Time, place, cost and what to bring should be easy to understand.</span></article>
+<article><strong>Bring a friend</strong><span>Arrive alone or with someone you trust.</span></article>
+<article><strong>Still early</strong><span>Chapter One is being shaped with care by Trendies.</span></article>
+</div>
+</section>
 <section class="chapter-notes" id="notes">
 <div class="section-head">
 <p class="kicker">Chapter notes</p>
@@ -346,6 +371,35 @@
 <article><strong>City helpers</strong><span>Suggest places, bring friends and shape your city.</span></article>
 <article><strong>Creative partners</strong><span>Photo, film, design, social content and storytelling.</span></article>
 </div>
+<form action="/api/submit-partner-enquiry" class="partner-form" id="partnerForm" method="POST">
+<input aria-hidden="true" autocomplete="off" class="honeypot" name="website" tabindex="-1" type="text"/>
+<div class="two">
+<label>Name <span>required</span><input name="name" placeholder="Your name" required=""/></label>
+<label>Email <span>required</span><input name="email" placeholder="you@example.com" required="" type="email"/></label>
+</div>
+<div class="two">
+<label>Organisation <small>optional</small><input name="organisation" placeholder="Brand, venue, cafe, studio..."/></label>
+<label>Role <small>optional</small><input name="role" placeholder="Founder, manager, creative..."/></label>
+</div>
+<div class="two">
+<label>City / country <small>optional</small><input name="city_country" placeholder="London, UK"/></label>
+<label>Type of support <span>required</span>
+<select name="support_type" required="">
+<option value="">Choose one</option>
+<option>Venue / space</option>
+<option>Drinks / snacks</option>
+<option>Creative collaboration</option>
+<option>Photography / film</option>
+<option>Brand sponsorship</option>
+<option>Safety / safeguarding support</option>
+<option>Other</option>
+</select>
+</label>
+</div>
+<label>Message <span>required</span><textarea name="message" placeholder="Tell us what you would like to build with Trendies." required="" rows="4"></textarea></label>
+<button class="button primary full" type="submit">Send partner enquiry</button>
+<p class="status" id="partnerStatus" role="status"></p>
+</form>
 <div class="partner-actions">
 <a class="button primary" href="mailto:tende.amery@gmail.com?subject=Trendies%20Global%20Partnership">Partnership enquiry</a>
 <a class="button secondary" href="#join">Join as a Trendie</a>

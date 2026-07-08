@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8" />
+  <meta name="robots" content="noindex,nofollow" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Trendies Admin Emails</title>
+  <style>
+    *{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,sans-serif;background:#f6eadb;color:#151312}
+    main{width:min(1120px,calc(100% - 1.2rem));margin:auto;padding:1rem 0 3rem}
+    header{display:flex;justify-content:space-between;gap:1rem;align-items:center;padding:1rem 0}
+    h1{font-family:Georgia,serif;font-size:clamp(2.4rem,7vw,5.6rem);line-height:.86;margin:.2rem 0;letter-spacing:-.05em}
+    h2{font-family:Georgia,serif;font-size:1.8rem;line-height:1;margin:.2rem 0 .75rem}
+    input,textarea,button{border:1px solid rgba(21,19,18,.14);border-radius:999px;padding:.75rem .9rem;font:inherit;background:#fffaf2;color:#151312;width:100%}
+    textarea{border-radius:1rem;min-height:160px;resize:vertical;line-height:1.45}
+    button,a.button{background:#151312;color:#fff8ef;border:0;border-radius:999px;padding:.78rem 1rem;text-decoration:none;font-weight:900;cursor:pointer;width:auto}
+    button.secondary,a.secondary{background:#fffaf2;color:#151312;border:1px solid rgba(21,19,18,.14)}
+    button.danger{background:#982f20}button:disabled{opacity:.55;cursor:not-allowed}
+    .card{background:rgba(255,248,239,.86);border:1px solid rgba(21,19,18,.1);border-radius:1.1rem;padding:1rem;box-shadow:0 12px 28px rgba(21,19,18,.06);margin:.75rem 0}
+    .grid{display:grid;grid-template-columns:1fr 1.25fr;gap:.75rem}.two{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}.actions{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center}
+    label{display:grid;gap:.35rem;font-weight:800;font-size:.88rem;color:#5d5048}label span{color:#151312}
+    .status{font-weight:900;color:#775100}.small{font-size:.86rem;opacity:.68}.sample{display:grid;gap:.35rem}.sample div{border-bottom:1px solid rgba(21,19,18,.08);padding:.45rem 0}
+    .preview{background:#fffaf2;border:1px solid rgba(21,19,18,.1);border-radius:1rem;padding:1rem;min-height:260px}.preview h3{font-family:Georgia,serif;font-size:2rem;line-height:1;margin:.2rem 0}.preview p{line-height:1.55}
+    @media(max-width:820px){header,.grid,.two{display:block}label{margin:.6rem 0}.actions button,.actions a{width:100%;text-align:center}}
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <div>
+        <p class="small">Private / noindex / opted-in recipients only</p>
+        <h1>Email Chapter One</h1>
+        <p class="status" id="status">Load the audience, send yourself a test, then type SEND only when ready.</p>
+      </div>
+      <a class="button secondary" href="/DATA_DASHBOARD.html">Back to CRM</a>
+    </header>
+
+    <section class="grid">
+      <div>
+        <section class="card">
+          <h2>Audience</h2>
+          <label>Admin password / dashboard token <input id="adminSecret" placeholder="ADMIN_SECRET or EXPORT_SECRET" /></label>
+          <div class="two">
+            <label>Country filter <input id="country" placeholder="Optional" /></label>
+            <label>City filter <input id="city" placeholder="Optional" /></label>
+          </div>
+          <label>Helper type filter <input id="helper" placeholder="creative, volunteer, partner..." /></label>
+          <div class="actions">
+            <label><span><input id="creative" type="checkbox" /> Creative people</span></label>
+            <label><span><input id="volunteers" type="checkbox" /> Volunteers/helpers</span></label>
+            <label><span><input id="partners" type="checkbox" /> Brands/venues/partners</span></label>
+          </div>
+          <p class="status" id="audienceCount">Audience not loaded yet.</p>
+          <div class="actions">
+            <button id="loadAudience" type="button">Load audience</button>
+          </div>
+          <div class="sample" id="sample"></div>
+        </section>
+
+        <section class="card">
+          <h2>Safety</h2>
+          <p class="small">This page only targets people who opted into updates, confirmed they are 18+, and have not unsubscribed. Every email automatically includes preference and unsubscribe links.</p>
+          <p class="small">Real sends require typing <b>SEND</b>. Test emails go only to the admin email.</p>
+        </section>
+      </div>
+
+      <div>
+        <section class="card">
+          <h2>Composer</h2>
+          <label>Subject <input id="subject" placeholder="Example: Chapter One is warming up" /></label>
+          <label>Preview text <input id="previewText" placeholder="Short inbox preview" /></label>
+          <label>Main body <textarea id="body" placeholder="Write like Tende: warm, clear, cinematic, safe."></textarea></label>
+          <div class="two">
+            <label>CTA label <input id="ctaLabel" placeholder="Optional: Join the channel" /></label>
+            <label>CTA URL <input id="ctaUrl" placeholder="Optional: https://..." /></label>
+          </div>
+          <div class="actions">
+            <button id="renderPreview" class="secondary" type="button">Preview</button>
+            <button id="sendTest" type="button">Send test to me</button>
+          </div>
+        </section>
+
+        <section class="card">
+          <h2>Preview</h2>
+          <div class="preview" id="preview">
+            <p class="small">Your preview will appear here.</p>
+          </div>
+        </section>
+
+        <section class="card">
+          <h2>Final send</h2>
+          <label>Type SEND to confirm <input id="confirm" placeholder="SEND" /></label>
+          <div class="actions">
+            <button id="sendReal" class="danger" type="button">Send to real audience</button>
+          </div>
+        </section>
+      </div>
+    </section>
+  </main>
+
+<script>
+const $ = s => document.querySelector(s);
+const saved = localStorage.getItem("trendies-dashboard-token") || "";
+$("#adminSecret").value = saved;
+function esc(v){ return String(v ?? "").replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function filters(){
+  return {
+    country: $("#country").value.trim(),
+    city: $("#city").value.trim(),
+    helper_type: $("#helper").value.trim(),
+    creative: $("#creative").checked,
+    volunteers: $("#volunteers").checked,
+    partners: $("#partners").checked
+  };
+}
+function payload(action){
+  const admin_secret = $("#adminSecret").value.trim();
+  localStorage.setItem("trendies-dashboard-token", admin_secret);
+  return {
+    action,
+    admin_secret,
+    filters: filters(),
+    subject: $("#subject").value.trim(),
+    preview_text: $("#previewText").value.trim(),
+    body: $("#body").value.trim(),
+    cta_label: $("#ctaLabel").value.trim(),
+    cta_url: $("#ctaUrl").value.trim(),
+    confirm: $("#confirm").value.trim()
+  };
+}
+function candidates(path){ return [path, path.replace("/api/", "/.netlify/functions/")]; }
+async function post(action){
+  let last;
+  for(const url of candidates("/api/admin-email-campaign")){
+    try{
+      const res = await fetch(url, {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(payload(action))});
+      const data = await res.json().catch(()=>({}));
+      if(!res.ok || !data.ok) throw new Error(data.error || `Backend returned ${res.status}`);
+      return data;
+    }catch(e){ last = e; }
+  }
+  throw last || new Error("Could not reach admin email function");
+}
+function renderPreview(){
+  $("#preview").innerHTML = `
+    <p class="small">${esc($("#previewText").value || "Inbox preview")}</p>
+    <h3>${esc($("#subject").value || "Email subject")}</h3>
+    <p>Hey Tende,</p>
+    <p>${esc($("#body").value || "Email body").replace(/\n/g,"<br>")}</p>
+    ${$("#ctaLabel").value && $("#ctaUrl").value ? `<p><a class="button" href="${esc($("#ctaUrl").value)}">${esc($("#ctaLabel").value)}</a></p>` : ""}
+    <p class="small">Preference and unsubscribe links will be added automatically.</p>
+  `;
+}
+$("#renderPreview").addEventListener("click", renderPreview);
+$("#loadAudience").addEventListener("click", async () => {
+  $("#status").textContent = "Loading audience...";
+  try{
+    const data = await post("audience");
+    $("#audienceCount").textContent = `${data.recipient_count} eligible recipients.`;
+    $("#sample").innerHTML = (data.sample || []).map(r => `<div><b>${esc(r.first_name || "Trendie")}</b> ${esc(r.email)}<br><span class="small">${esc(r.city)}, ${esc(r.country)} / ${esc(r.helper_type)}</span></div>`).join("");
+    $("#status").textContent = "Audience loaded.";
+  }catch(e){ $("#status").textContent = e.message; }
+});
+$("#sendTest").addEventListener("click", async () => {
+  renderPreview();
+  $("#status").textContent = "Sending test email...";
+  try{
+    const data = await post("test");
+    $("#status").textContent = `Test sent. Eligible audience: ${data.eligible_recipients}.`;
+  }catch(e){ $("#status").textContent = e.message; }
+});
+$("#sendReal").addEventListener("click", async () => {
+  if($("#confirm").value.trim() !== "SEND"){
+    $("#status").textContent = "Type SEND first. This is on purpose.";
+    return;
+  }
+  $("#sendReal").disabled = true;
+  $("#status").textContent = "Sending real campaign...";
+  try{
+    const data = await post("send");
+    $("#status").textContent = `Campaign sent: ${data.sent} sent, ${data.failed} failed, ${data.recipient_count} recipients.`;
+  }catch(e){
+    $("#status").textContent = e.message;
+  }finally{
+    $("#sendReal").disabled = false;
+  }
+});
+</script>
+</body>
+</html>

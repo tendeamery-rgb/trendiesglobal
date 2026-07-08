@@ -32,6 +32,30 @@
   X-Robots-Tag: noindex, nofollow
   Cache-Control: no-store
 
+/welcome
+  X-Robots-Tag: noindex, nofollow
+  Cache-Control: no-store
+
+/welcome.html
+  X-Robots-Tag: noindex, nofollow
+  Cache-Control: no-store
+
+/preferences
+  X-Robots-Tag: noindex, nofollow
+  Cache-Control: no-store
+
+/preferences.html
+  X-Robots-Tag: noindex, nofollow
+  Cache-Control: no-store
+
+/unsubscribe
+  X-Robots-Tag: noindex, nofollow
+  Cache-Control: no-store
+
+/unsubscribe.html
+  X-Robots-Tag: noindex, nofollow
+  Cache-Control: no-store
+
 /data/*
   X-Robots-Tag: noindex, nofollow
   Cache-Control: public, max-age=300

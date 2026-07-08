@@ -30,19 +30,23 @@ exports.handler = async (event) => {
 
     const rows = await supabase(`trendies_interest_responses?select=*&order=created_at.desc&limit=${limit}&offset=${offset}`,{method:"GET"});
     const headers = [
-      "created_at","name","email","age","social","city","country","region",
-      "respondent_type","partnership_type","intent_strength","activity_tags","safety_tags",
+      "created_at","updated_at","first_name","full_name","name","email","email_normalized","age","social","social_handle","city","country","region",
+      "respondent_type","partnership_type","intent_strength","helper_type","activity_tags","safety_tags",
       "categorisation_source","ai_priority","ai_summary","ai_tags",
-      "wants_updates","show_up_reason","safety_needs","help_build"
+      "wants_updates","confirmed_18_plus","unsubscribed_at","welcome_email_sent_at","referral_code","referred_by",
+      "show_up_reason","safety_needs","help_build"
     ];
 
     const lines = [headers.join(",")];
     (rows||[]).forEach(r => {
       lines.push([
-        r.created_at, r.name, r.email, r.age, r.social, r.city, r.country, r.region,
-        r.respondent_type, r.partnership_type, r.intent_strength, r.activity_tags, r.safety_tags,
+        r.created_at, r.updated_at, r.first_name, r.full_name, r.name, r.email, r.email_normalized, r.age, r.social, r.social_handle, r.city, r.country, r.region,
+        r.respondent_type, r.partnership_type, r.intent_strength, r.helper_type, r.activity_tags, r.safety_tags,
         r.categorisation_source, r.ai_priority, r.ai_summary, r.ai_tags,
-        r.wants_updates, r.answers && r.answers.show_up_reason, r.answers && r.answers.safety_needs, r.answers && r.answers.help_build
+        r.wants_updates, r.confirmed_18_plus, r.unsubscribed_at, r.welcome_email_sent_at, r.referral_code, r.referred_by,
+        r.what_would_make_you_show_up || (r.answers && r.answers.show_up_reason),
+        r.what_would_make_it_feel_safe || (r.answers && r.answers.safety_needs),
+        r.helper_type || (r.answers && r.answers.help_build)
       ].map(csvCell).join(","));
     });
 

@@ -49,6 +49,10 @@ function explainFetchFailure(url, error){
   return `Could not reach the live backend for ${url}. On Netlify, check that Functions are deployed and the /api redirect exists.`;
 }
 
+const urlParams = new URLSearchParams(location.search);
+const referralCode = urlParams.get("ref") || "";
+if($("#referralSource")) $("#referralSource").value = referralCode;
+
 async function postJSON(url, data){
   let lastError;
   for(const candidate of apiCandidates(url)){
@@ -191,14 +195,36 @@ $("#interestForm")?.addEventListener("submit", async (e)=>{
   const button = $("button[type='submit']", form);
   const data = Object.fromEntries(new FormData(form).entries());
   if(data.website) return;
+  data.referred_by = data.referred_by || referralCode;
+  data.signup_source = data.signup_source || "website_interest_form";
   setStatus("#interestStatus","Submitting to the live Trendies backend...");
   if(button) button.disabled = true;
   try{
-    await postJSON("/api/submit-interest", data);
+    const result = await postJSON("/api/submit-interest", data);
     form.reset();
-    setStatus("#interestStatus","Done — you’re on the list and saved to the Trendies dashboard.");
+    setStatus("#interestStatus","Done — you’re in Chapter One. Taking you to the welcome page...");
+    if(result.redirect_url) window.location.href = result.redirect_url;
   }catch(err){
     setStatus("#interestStatus", err.message || "Could not submit yet.", true);
+  }finally{
+    if(button) button.disabled = false;
+  }
+});
+
+$("#partnerForm")?.addEventListener("submit", async (e)=>{
+  e.preventDefault();
+  const form = e.currentTarget;
+  const button = $("button[type='submit']", form);
+  const data = Object.fromEntries(new FormData(form).entries());
+  if(data.website) return;
+  setStatus("#partnerStatus","Sending partner enquiry...");
+  if(button) button.disabled = true;
+  try{
+    await postJSON("/api/submit-partner-enquiry", data);
+    form.reset();
+    setStatus("#partnerStatus","Sent — thank you. This has been saved to the Trendies dashboard.");
+  }catch(err){
+    setStatus("#partnerStatus", err.message || "Could not send yet.", true);
   }finally{
     if(button) button.disabled = false;
   }
@@ -329,6 +355,40 @@ async function loadCountryPins(){
 }
 loadCountryPins();
 
+function cityLine(city){
+  const name = city.city || "A city";
+  const count = Number(city.count || 0);
+  const status = city.status || (count >= 25 ? "chapter potential" : count >= 8 ? "nearly ready" : "warming up");
+  const activity = city.top_activity || "golden-hour plans";
+  if(status === "chapter potential") return `${name} has chapter energy.`;
+  if(status === "nearly ready") return `${name} is nearly ready.`;
+  return `${name} is warming up.`;
+}
+
+async function loadChapterCities(){
+  const grid = $("#chapterCitiesGrid");
+  if(!grid) return;
+  try{
+    const data = await getJSON("/api/chapter-cities");
+    const cities = Array.isArray(data.cities) ? data.cities : [];
+    if(!cities.length) {
+      grid.innerHTML = `<article><strong>Chapter One is warming up.</strong><span>Join the list to help your city appear here.</span></article>`;
+      return;
+    }
+    grid.innerHTML = cities.map(city => `
+      <article>
+        <span>${escapeHTML(city.status || "warming up")}</span>
+        <strong>${escapeHTML(cityLine(city))}</strong>
+        <p>${escapeHTML(city.country || "Somewhere new")} • ${Number(city.count || 0)} interested Trendies</p>
+        <small>${escapeHTML(city.top_activity || "general coming-of-age summer")}</small>
+      </article>
+    `).join("");
+  }catch(e){
+    grid.innerHTML = `<article><strong>City signals load on the live site.</strong><span>Join the list and help your city warm up.</span></article>`;
+  }
+}
+loadChapterCities();
+
 $("#flagForm")?.addEventListener("submit", async (e)=>{
   e.preventDefault();
   const button = $("button[type='submit']", e.currentTarget);
@@ -370,12 +430,66 @@ const promptSets = {
   chapter: [
     ["Level 1", "What plan would make your summer feel cinematic but still safe?"],
     ["Level 1", "What place in your city would you show a new friend first?"],
+    ["Level 1", "What is your perfect daylight first hang: picnic, walk, market, gallery, or cards?"],
+    ["Level 1", "What song would play over the opening scene of your summer?"],
+    ["Level 1", "What snack instantly makes a plan feel warmer?"],
+    ["Level 1", "What is one small thing that makes you feel welcomed when you arrive?"],
+    ["Level 1", "What would you put in a photo dump called Chapter One?"],
+    ["Level 1", "What is a local place you have always wanted an excuse to explore?"],
+    ["Level 1", "What daytime plan would you invite someone to if you were feeling brave?"],
+    ["Level 1", "What is your easiest yes: live music, card games, short films, or exploring somewhere new?"],
+    ["Level 1", "What does your ideal group chat message say before a plan?"],
+    ["Level 1", "What would make a picnic feel like a scene from your life, not just a plan?"],
     ["Level 2", "Who do you become when you stop waiting to be invited?"],
     ["Level 2", "What kind of friend are you hoping to meet in Chapter One?"],
     ["Level 2", "What small brave yes could change this week for you?"],
+    ["Level 2", "What version of you comes out around people who make life feel bigger?"],
+    ["Level 2", "What is something you love but rarely get to share with new people?"],
+    ["Level 2", "What would make you feel like you belonged without needing to perform?"],
+    ["Level 2", "What is one thing you wish more people understood about this chapter of your life?"],
+    ["Level 2", "What plan would help you expand your circle without feeling forced?"],
+    ["Level 2", "What is a memory you want to create before summer ends?"],
+    ["Level 2", "What makes a stranger start feeling like a friend?"],
+    ["Level 2", "What part of growing up are you secretly excited for?"],
+    ["Level 2", "What part of growing up feels confusing but kind of beautiful?"],
+    ["Level 2", "What would you do this month if you knew someone else wanted to join too?"],
+    ["Level 2", "What would make you say, this is exactly why I joined Trendies?"],
+    ["Level 2", "What is one thing you bring to a group that people might not notice at first?"],
     ["Level 3", "What are you ready to outgrow before this chapter ends?"],
     ["Level 3", "What memory do you want to be telling people about in September?"],
-    ["Wild card", "Pick a public place, a snack, a song and one person you would invite."]
+    ["Level 3", "What are you no longer shrinking yourself to fit into?"],
+    ["Level 3", "What kind of people make you feel more like yourself?"],
+    ["Level 3", "What old story about friendship are you ready to rewrite?"],
+    ["Level 3", "What would change if you treated connection like something you can practise?"],
+    ["Level 3", "What do you want your future self to thank you for trying?"],
+    ["Level 3", "Where have you been waiting for permission to begin?"],
+    ["Level 3", "What does having your coming of age with other people mean to you?"],
+    ["Level 3", "What would you say to someone who thinks everyone already has their people except them?"],
+    ["Level 3", "What kind of summer would feel honest, not performative?"],
+    ["Friendship", "What is a green flag in a new friend?"],
+    ["Friendship", "What makes you feel safe enough to be funny around someone new?"],
+    ["Friendship", "What is one question you wish people asked more often?"],
+    ["Friendship", "What does expanding your circle look like without losing yourself?"],
+    ["Friendship", "What small ritual could turn strangers into a community?"],
+    ["Creative", "If this summer became a short film, what would the first shot be?"],
+    ["Creative", "What would you photograph if you wanted to remember how this chapter felt?"],
+    ["Creative", "What tiny creative project could a group finish in one afternoon?"],
+    ["Creative", "What would your coming-of-age playlist be called?"],
+    ["Creative", "What object would you keep as proof that this summer happened?"],
+    ["Golden hour", "Where would you take a friend for the best golden-hour walk?"],
+    ["Golden hour", "What would you want everyone to write on a blanket note before sunset?"],
+    ["Golden hour", "What is one ordinary moment that would feel cinematic with the right people?"],
+    ["Tiny dare", "Compliment someone at the next plan on something specific and real."],
+    ["Tiny dare", "Ask one person what they are excited to become this year."],
+    ["Tiny dare", "Bring one extra snack for someone who came alone."],
+    ["Tiny dare", "Suggest a public plan instead of waiting for someone else to do it."],
+    ["Tiny dare", "Take one photo that feels like evidence of being alive."],
+    ["Wild card", "Pick a public place, a snack, a song and one person you would invite."],
+    ["Wild card", "Choose the chapter title for the next plan in five words."],
+    ["Wild card", "Design a no-pressure hang that costs under 10 pounds."],
+    ["Wild card", "Choose: picnic blanket, disposable camera, card deck, or speaker. Why?"],
+    ["Wild card", "Make a plan where the only rule is that everyone can arrive alone."],
+    ["Wild card", "What would Trendies host in your city if it listened to you first?"]
   ],
   soft: [
     ["Soft start", "What would make arriving alone feel easier?"],
@@ -383,9 +497,30 @@ const promptSets = {
     ["Soft start", "What would you want the group chat to say before a plan?"],
     ["Soft start", "What is a safe public plan you would actually say yes to?"],
     ["Soft start", "What is one thing you could bring to make a picnic feel warmer?"],
-    ["Soft start", "What city corner makes you feel most like yourself?"]
+    ["Soft start", "What city corner makes you feel most like yourself?"],
+    ["Soft start", "What would help you feel comfortable saying, I am new here?"],
+    ["Soft start", "What is a good first question that does not feel too intense?"],
+    ["Soft start", "What kind of plan lets people talk without pressure?"],
+    ["Soft start", "What is one boundary that would help you enjoy meeting new people?"],
+    ["Soft start", "What information do you need before deciding to show up?"],
+    ["Soft start", "What time of day feels easiest for meeting new people in public?"],
+    ["Soft start", "What would make a group feel welcoming before anyone arrives?"],
+    ["Soft start", "What is your favourite low-cost way to spend an afternoon?"],
+    ["Soft start", "What is a gentle way to leave a plan if you feel tired?"],
+    ["Soft start", "What would make the first five minutes less awkward?"],
+    ["Soft start", "What do you hope someone notices about you beyond the basics?"],
+    ["Soft start", "What would make you invite a friend and still meet new people?"],
+    ["Soft start", "What kind of public setting helps conversation flow naturally?"],
+    ["Soft start", "What would a no-pressure creative hang look like for you?"],
+    ["Soft start", "What makes a plan feel safe, clear and worth leaving the house for?"],
+    ["Soft start", "What would you want to know about the host before coming?"],
+    ["Soft start", "What is one thing you never want people to feel at a Trendies plan?"],
+    ["Soft start", "What is a small welcome ritual that would calm your nerves?"],
+    ["Soft start", "What would make it easier to come back for a second plan?"]
   ]
 };
+
+let lastPromptQuestions = new Set();
 
 function shuffle(items){
   return items.slice().sort(() => Math.random() - 0.5);
@@ -394,7 +529,10 @@ function shuffle(items){
 function renderPrompts(kind="chapter"){
   const board = $("#promptBoard");
   if(!board) return;
-  const cards = shuffle(promptSets[kind] || promptSets.chapter).slice(0, 3);
+  const pool = shuffle(promptSets[kind] || promptSets.chapter);
+  let cards = pool.filter(([, question]) => !lastPromptQuestions.has(question)).slice(0, 3);
+  if(cards.length < 3) cards = pool.slice(0, 3);
+  lastPromptQuestions = new Set(cards.map(([, question]) => question));
   board.innerHTML = cards.map(([level, question]) => `
     <button class="prompt-card" type="button">
       <span>${escapeHTML(level)}</span>

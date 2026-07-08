@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <meta name="robots" content="noindex,nofollow"/>
+  <title>You are in Chapter One | Trendies Global</title>
+  <link href="/favicon.svg" rel="icon" sizes="any" type="image/svg+xml"/>
+  <link href="/styles.css" rel="stylesheet"/>
+  <style>
+    body{min-height:100vh;display:grid;place-items:center;padding:18px}
+    .welcome-wrap{width:min(980px,100%);display:grid;grid-template-columns:1.05fr .95fr;gap:16px;align-items:stretch}
+    .welcome-card{padding:clamp(22px,5vw,46px)}
+    .welcome-card h1{font-family:Georgia,serif;font-size:clamp(3rem,9vw,6.8rem);line-height:.82;margin:0 0 18px;letter-spacing:0}
+    .welcome-card p{font-size:1.06rem;line-height:1.6}
+    .welcome-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+    .ref-box{background:rgba(255,249,239,.76);border:1px solid rgba(21,17,15,.1);border-radius:14px;padding:14px;margin-top:16px;word-break:break-word}
+    .welcome-photo{min-height:520px;overflow:hidden}
+    .welcome-photo img{width:100%;height:100%;object-fit:cover;display:block}
+    @media(max-width:760px){.welcome-wrap{grid-template-columns:1fr}.welcome-photo{min-height:340px;order:-1}.welcome-card h1{font-size:clamp(2.7rem,14vw,4.4rem)}}
+  </style>
+</head>
+<body>
+  <main class="welcome-wrap">
+    <section class="card welcome-card">
+      <p class="kicker">Welcome</p>
+      <h1>You are in Chapter One.</h1>
+      <p id="welcomeLead">Check your email, pin your flag, invite one friend, leave a wall note and follow the Instagram channel.</p>
+      <p>Your city helps shape where Trendies begins. This is still early, and that is the beautiful part.</p>
+      <div class="ref-box" id="refBox" hidden>
+        <strong>Invite one friend who would understand the vision.</strong>
+        <p id="refLink"></p>
+        <button class="button secondary" id="copyRef" type="button">Copy referral link</button>
+      </div>
+      <div class="welcome-actions">
+        <a class="button primary" href="/#map">Pin your flag</a>
+        <a class="button secondary" href="/#wall">Leave a wall note</a>
+        <a class="button secondary" href="https://www.instagram.com/channel/AbYv47ILon7Ws8HJ/" rel="noopener" target="_blank">Instagram channel</a>
+        <a class="button secondary" href="/">Back home</a>
+      </div>
+      <p class="status" id="status" role="status"></p>
+    </section>
+    <figure class="card welcome-photo"><img alt="Friends by the water" src="/assets/chapter-marina-heart.jpg"/></figure>
+  </main>
+  <script>
+    const params = new URLSearchParams(location.search);
+    const token = params.get("token") || "";
+    const emailStatus = params.get("email") || "";
+    const statusEl = document.querySelector("#status");
+    if(emailStatus === "sent") statusEl.textContent = "Welcome email sent. Check your inbox.";
+    if(emailStatus === "issue") statusEl.textContent = "You are signed up. The welcome email may not have sent, but your place is saved.";
+    if(emailStatus === "skipped") statusEl.textContent = "You are signed up. You did not opt into email updates.";
+    async function load(){
+      if(!token) return;
+      try{
+        const res = await fetch("/api/signup-profile?token=" + encodeURIComponent(token));
+        const data = await res.json();
+        if(!data.ok) return;
+        if(data.first_name) document.querySelector("#welcomeLead").textContent = `${data.first_name}, check your email, pin your flag, invite one friend, leave a wall note and follow the Instagram channel.`;
+        if(data.referral_link){
+          document.querySelector("#refBox").hidden = false;
+          document.querySelector("#refLink").textContent = data.referral_link;
+          document.querySelector("#copyRef").onclick = async () => {
+            await navigator.clipboard.writeText(data.referral_link);
+            statusEl.textContent = "Referral link copied.";
+          };
+        }
+      }catch(error){}
+    }
+    load();
+  </script>
+</body>
+</html>

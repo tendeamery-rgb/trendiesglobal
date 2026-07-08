@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <meta name="robots" content="noindex,nofollow"/>
+  <title>Email preferences | Trendies Global</title>
+  <link href="/favicon.svg" rel="icon" sizes="any" type="image/svg+xml"/>
+  <link href="/styles.css" rel="stylesheet"/>
+  <style>
+    body{min-height:100vh;display:grid;place-items:center;padding:18px}
+    .prefs{width:min(760px,100%);padding:clamp(22px,5vw,42px)}
+    .prefs h1{font-family:Georgia,serif;font-size:clamp(2.6rem,9vw,5rem);line-height:.9;margin:0 0 14px}
+    .pref-list{display:grid;gap:10px;margin:22px 0}
+    .pref-list label{display:flex;gap:12px;align-items:flex-start;background:rgba(255,249,239,.72);border:1px solid rgba(21,17,15,.1);border-radius:14px;padding:14px}
+    .pref-list input{margin-top:4px}
+    .pref-list span{color:inherit;font-size:inherit;font-weight:inherit;text-transform:none}
+  </style>
+</head>
+<body>
+  <main class="card prefs">
+    <p class="kicker">Preferences</p>
+    <h1>Choose what reaches you.</h1>
+    <p>You can keep the parts you want and turn off the parts you do not. You can come back anytime.</p>
+    <form id="prefsForm">
+      <div class="pref-list">
+        <label><input name="general_updates" type="checkbox" checked/> <span><strong>General Trendies updates</strong><br/>Launch notes, community updates and Chapter One news.</span></label>
+        <label><input name="city_chapter_updates" type="checkbox" checked/> <span><strong>City/chapter updates</strong><br/>Signals about your city, nearby plans and chapter interest.</span></label>
+        <label><input name="volunteer_helper_updates" type="checkbox" checked/> <span><strong>Volunteer/helper updates</strong><br/>Ways to help make safe public plans feel real.</span></label>
+        <label><input name="creative_opportunities" type="checkbox" checked/> <span><strong>Creative opportunities</strong><br/>Photography, film, design, content and storytelling moments.</span></label>
+        <label><input name="brand_partner_updates" type="checkbox" checked/> <span><strong>Brand/partner updates</strong><br/>Partner, venue, sponsor and collaboration opportunities.</span></label>
+      </div>
+      <button class="button primary" type="submit">Save preferences</button>
+      <a class="button secondary" id="unsubscribeLink" href="/unsubscribe">Unsubscribe instead</a>
+      <p class="status" id="status" role="status"></p>
+    </form>
+  </main>
+  <script>
+    const token = new URLSearchParams(location.search).get("token") || "";
+    const statusEl = document.querySelector("#status");
+    const form = document.querySelector("#prefsForm");
+    document.querySelector("#unsubscribeLink").href = "/unsubscribe?token=" + encodeURIComponent(token);
+    function setPrefs(prefs){
+      for(const [key,value] of Object.entries(prefs || {})){
+        const input = form.elements[key];
+        if(input) input.checked = !!value;
+      }
+    }
+    async function load(){
+      if(!token){ statusEl.textContent = "Missing preferences token."; return; }
+      try{
+        const res = await fetch("/api/preferences?token=" + encodeURIComponent(token));
+        const data = await res.json();
+        if(!data.ok) throw new Error(data.error || "Could not load preferences.");
+        setPrefs(data.email_preferences);
+      }catch(error){ statusEl.textContent = error.message; }
+    }
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const prefs = {};
+      ["general_updates","city_chapter_updates","volunteer_helper_updates","creative_opportunities","brand_partner_updates"].forEach(key => prefs[key] = !!form.elements[key].checked);
+      statusEl.textContent = "Saving...";
+      try{
+        const res = await fetch("/api/preferences?token=" + encodeURIComponent(token), {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({token, email_preferences:prefs})});
+        const data = await res.json();
+        if(!data.ok) throw new Error(data.error || "Could not save preferences.");
+        statusEl.textContent = data.unsubscribed ? "You are unsubscribed. You can come back anytime." : "Saved. Your inbox is shaped around what you want.";
+      }catch(error){ statusEl.textContent = error.message; }
+    });
+    load();
+  </script>
+</body>
+</html>

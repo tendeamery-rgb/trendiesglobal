@@ -1,4 +1,25 @@
-const {ok, clean, escapeHTML, eventHeaders, parseJSONBody, ipHash, supabase, sendEmail} = require("./common");
+const {
+  ok,
+  clean,
+  escapeHTML,
+  eventHeaders,
+  parseJSONBody,
+  ipHash,
+  normalizeEmail,
+  isValidEmail,
+  randomToken,
+  referralCode,
+  rateLimit,
+  supabase,
+  sendEmail
+} = require("./common");
+const {
+  emailPreferencesFromBody,
+  firstNameFrom,
+  referralLink,
+  sendWelcomeEmail,
+  upsertResendContact
+} = require("./email-helpers");
 
 function regionFor(countryRaw){
   const c = String(countryRaw || "").toLowerCase();
@@ -142,27 +163,93 @@ async function aiCategorise(body, ruleCategories){
   }
 }
 
+async function findExistingSignup(email){
+  const encoded = encodeURIComponent(email);
+  const byNormalised = await supabase(`trendies_interest_responses?email_normalized=eq.${encoded}&select=*&limit=1`, {method:"GET"});
+  if(byNormalised && byNormalised[0]) return byNormalised[0];
+  const byLegacyEmail = await supabase(`trendies_interest_responses?email=eq.${encoded}&select=*&limit=1`, {method:"GET"});
+  return byLegacyEmail && byLegacyEmail[0] ? byLegacyEmail[0] : null;
+}
+
+async function patchSignup(id, body){
+  const rows = await supabase(`trendies_interest_responses?id=eq.${encodeURIComponent(id)}`, {
+    method:"PATCH",
+    body: JSON.stringify(body)
+  });
+  return rows && rows[0] ? rows[0] : body;
+}
+
+async function insertSignup(body){
+  const rows = await supabase("trendies_interest_responses", {
+    method:"POST",
+    body: JSON.stringify(body)
+  });
+  return rows && rows[0] ? rows[0] : body;
+}
+
+async function logDelivery(row){
+  try{
+    await supabase("trendies_email_deliveries", {method:"POST", body: JSON.stringify(row)});
+  }catch(error){
+    console.error("Email delivery log skipped:", error.message);
+  }
+}
+
 exports.handler = async (event) => {
   if(event.httpMethod === "OPTIONS") return ok({ok:true});
   if(event.httpMethod !== "POST") return ok({ok:false,error:"Method not allowed"},405);
 
   try{
+    if(!rateLimit(event, "submit-interest", 12, 60000)) return ok({ok:false,error:"Too many signup attempts. Please wait a moment and try again."},429);
     const parsed = parseJSONBody(event);
     if(parsed.error) return parsed.error;
     const b = parsed.body;
     if(b.website) return ok({ok:true});
 
+    const fullName = clean(b.full_name || b.name, 160);
+    const email = normalizeEmail(b.email);
+    const age = Number(b.age || 0);
+    const confirmed18 = !!b.confirm_18 && age >= 18;
+    if(!fullName || !email || !isValidEmail(email) || !clean(b.city,160) || !clean(b.country,160) || !confirmed18 || age > 120) {
+      return ok({ok:false,error:"Please complete the required fields with a valid email and confirm you are 18+."},400);
+    }
+
     const cats = categorise(b);
     const ai = await aiCategorise(b, cats);
+    const existing = await findExistingSignup(email);
+    const existingToken = existing && existing.unsubscribe_token;
+    const unsubscribeToken = existingToken || randomToken(24);
+    const code = (existing && existing.referral_code) || referralCode(email);
+    const wantsUpdates = !!b.updates_permission;
+    const now = new Date().toISOString();
+    const showUpReason = clean(b.what_would_make_you_show_up || b.show_up_reason,1200);
+    const safetyNeeds = clean(b.what_would_make_it_feel_safe || b.safety_needs,1200);
+    const helperType = clean(b.helper_type || b.help_build,300);
+
     const row = {
-      name: clean(b.name,160),
-      email: clean(b.email,220),
-      age: Number(b.age || 0),
-      social: clean(b.social,160),
+      updated_at: now,
+      name: fullName,
+      full_name: fullName,
+      first_name: firstNameFrom(fullName),
+      email,
+      email_normalized: email,
+      age,
+      social: clean(b.social_handle || b.social,160),
+      social_handle: clean(b.social_handle || b.social,160),
       city: clean(b.city,160),
       country: clean(b.country,160),
       region: regionFor(b.country),
-      wants_updates: !!b.updates_permission,
+      wants_updates: wantsUpdates,
+      confirmed_18_plus: confirmed18,
+      helper_type: helperType,
+      what_would_make_you_show_up: showUpReason,
+      what_would_make_it_feel_safe: safetyNeeds,
+      referral_code: code,
+      referred_by: clean(b.referred_by || b.referral_source || b.ref,80),
+      signup_source: clean(b.signup_source || "website_interest_form",120),
+      email_preferences: emailPreferencesFromBody(b),
+      unsubscribe_token: unsubscribeToken,
+      unsubscribed_at: wantsUpdates ? null : ((existing && existing.unsubscribed_at) || null),
       respondent_type: cats.respondent_type,
       partnership_type: cats.partnership_type,
       intent_strength: cats.intent_strength,
@@ -172,20 +259,45 @@ exports.handler = async (event) => {
       ai_summary: ai ? ai.ai_summary : "",
       ai_priority: ai ? ai.ai_priority : "",
       ai_tags: ai ? ai.ai_tags : [],
+      welcome_email_sent_at: existing && existing.welcome_email_sent_at ? existing.welcome_email_sent_at : null,
       answers: {
-        show_up_reason: clean(b.show_up_reason,1200),
-        safety_needs: clean(b.safety_needs,1200),
-        help_build: clean(b.help_build,300)
+        show_up_reason: showUpReason,
+        safety_needs: safetyNeeds,
+        help_build: helperType,
+        wants_updates: wantsUpdates,
+        confirmed_18_plus: confirmed18
       },
       user_agent: clean(eventHeaders(event)["user-agent"],500),
       ip_hash: ipHash(event)
     };
 
-    if(!row.name || !row.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(row.email) || !row.city || !row.country || row.age < 18 || row.age > 120) {
-      return ok({ok:false,error:"Required fields missing"},400);
+    const saved = existing ? await patchSignup(existing.id, row) : await insertSignup(row);
+
+    const contactResult = await upsertResendContact({...row, id:saved.id});
+    if(contactResult && (contactResult.error || contactResult.id)) {
+      await patchSignup(saved.id, {
+        resend_contact_id: contactResult.id || (existing && existing.resend_contact_id) || null,
+        last_resend_error: contactResult.error || ""
+      });
     }
 
-    await supabase("trendies_interest_responses",{method:"POST",body:JSON.stringify(row)});
+    let welcomeResult = {sent:false, skipped:true};
+    if(row.wants_updates && row.confirmed_18_plus && !row.unsubscribed_at && !(existing && existing.welcome_email_sent_at)) {
+      welcomeResult = await sendWelcomeEmail({...row, id:saved.id});
+      await patchSignup(saved.id, {
+        welcome_email_sent_at: welcomeResult.sent ? new Date().toISOString() : null,
+        welcome_email_last_error: welcomeResult.error || ""
+      });
+      await logDelivery({
+        campaign_id: null,
+        recipient_email: row.email,
+        recipient_user_id: saved.id,
+        resend_email_id: welcomeResult.id || null,
+        status: welcomeResult.sent ? "sent" : "failed",
+        error_message: welcomeResult.error || "",
+        sent_at: new Date().toISOString()
+      });
+    }
 
     const shouldEmail = String(process.env.SEND_INTEREST_EMAILS || "true").toLowerCase() !== "false";
     const emailResult = shouldEmail
@@ -210,7 +322,21 @@ exports.handler = async (event) => {
       )
       : {sent:false, skipped:true};
 
-    return ok({ok:true, email_sent: !!(emailResult && emailResult.sent), email_skipped: !!(emailResult && emailResult.skipped), categories:{
+    const emailStatus = welcomeResult.sent ? "sent" : (welcomeResult.error ? "issue" : "skipped");
+    return ok({
+      ok:true,
+      deduped: !!existing,
+      id: saved.id,
+      email_sent: !!(emailResult && emailResult.sent),
+      admin_email_sent: !!(emailResult && emailResult.sent),
+      welcome_email_sent: !!(welcomeResult && welcomeResult.sent),
+      welcome_email_error: welcomeResult.error || "",
+      resend_contact_synced: !!(contactResult && contactResult.synced),
+      referral_code: row.referral_code,
+      referral_link: referralLink(row.referral_code),
+      redirect_url: `/welcome?token=${encodeURIComponent(row.unsubscribe_token)}&email=${encodeURIComponent(emailStatus)}`,
+      email_skipped: !!(emailResult && emailResult.skipped),
+      categories:{
       region: row.region,
       respondent_type: row.respondent_type,
       partnership_type: row.partnership_type,

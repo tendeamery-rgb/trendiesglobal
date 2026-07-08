@@ -11,6 +11,26 @@
   status = 200
 
 [[redirects]]
+  from = "/welcome"
+  to = "/welcome.html"
+  status = 200
+
+[[redirects]]
+  from = "/preferences"
+  to = "/preferences.html"
+  status = 200
+
+[[redirects]]
+  from = "/unsubscribe"
+  to = "/unsubscribe.html"
+  status = 200
+
+[[redirects]]
+  from = "/admin/emails"
+  to = "/admin/emails.html"
+  status = 200
+
+[[redirects]]
   from = "https://www.trendiesglobal.com/*"
   to = "https://trendiesglobal.com/:splat"
   status = 301
@@ -24,6 +44,24 @@
 
 [[headers]]
   for = "/admin/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+    Cache-Control = "no-store"
+
+[[headers]]
+  for = "/welcome*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+    Cache-Control = "no-store"
+
+[[headers]]
+  for = "/preferences*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+    Cache-Control = "no-store"
+
+[[headers]]
+  for = "/unsubscribe*"
   [headers.values]
     X-Robots-Tag = "noindex, nofollow"
     Cache-Control = "no-store"

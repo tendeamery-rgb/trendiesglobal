@@ -6,6 +6,12 @@ Allow: /favicon.svg
 Allow: /site.webmanifest
 Disallow: /DATA_DASHBOARD.html
 Disallow: /admin/
+Disallow: /welcome
+Disallow: /welcome.html
+Disallow: /preferences
+Disallow: /preferences.html
+Disallow: /unsubscribe
+Disallow: /unsubscribe.html
 Disallow: /netlify/
 Disallow: /scripts/
 Disallow: /SUPABASE_SETUP.sql

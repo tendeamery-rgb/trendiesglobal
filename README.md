@@ -23,6 +23,7 @@ If you are uploading to Netlify, use the ZIP named:
 - Owner editing guide
 - Google Sheets auto-sync script
 - Google Search setup guide
+- Resend welcome emails, preferences, unsubscribe and private broadcast tools
 
 ## Launch today
 
@@ -49,6 +50,7 @@ If you are uploading to Netlify, use the ZIP named:
 - Added a favicon and web manifest so Google can replace the old Wix icon after recrawling.
 - Rebuilt the Google Sheets script so it creates a clean dataset, breakdowns and dashboard charts.
 - Added batched CSV export support for the Google Sheet so launch data can keep growing.
+- Added a private CRM dashboard, automatic welcome email, referral links, preference/unsubscribe pages, partner enquiry form and admin broadcast page.
 
 
 ## v64 update — photo refresh + anti-overlap

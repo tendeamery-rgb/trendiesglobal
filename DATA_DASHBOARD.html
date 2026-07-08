@@ -4,84 +4,149 @@
   <meta charset="utf-8" />
   <meta name="robots" content="noindex,nofollow" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Trendies Data Dashboard</title>
+  <title>Trendies Private CRM Dashboard</title>
   <style>
     *{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,sans-serif;background:#f6eadb;color:#151312}
-    main{width:min(1200px,calc(100% - 1.2rem));margin:auto;padding:1rem 0 3rem}
-    header{display:flex;justify-content:space-between;gap:1rem;align-items:center;padding:1rem 0;position:sticky;top:0;background:rgba(246,234,219,.92);z-index:3}
-    h1{font-family:Georgia,serif;font-size:clamp(2.2rem,6vw,5rem);line-height:.82;margin:.2rem 0;letter-spacing:-.06em}
-    .token{display:flex;gap:.5rem;flex-wrap:wrap}.token input{min-width:280px}
-    input,button{border:1px solid rgba(21,19,18,.12);border-radius:999px;padding:.75rem .9rem;font:inherit}
-    button,a.button{background:#151312;color:#fff8ef;border:0;border-radius:999px;padding:.75rem .9rem;text-decoration:none;font-weight:900;cursor:pointer}
-    .cards{display:grid;grid-template-columns:repeat(5,1fr);gap:.6rem;margin:1rem 0}.card{background:rgba(255,248,239,.8);border:1px solid rgba(21,19,18,.1);border-radius:1.2rem;padding:1rem;box-shadow:0 12px 28px rgba(21,19,18,.06)}
-    .card strong{display:block;font-size:2rem}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.7rem}.panel h2{margin:.2rem 0 .6rem;font-family:Georgia,serif;font-size:1.8rem}.pill{display:flex;justify-content:space-between;gap:1rem;border-bottom:1px solid rgba(21,19,18,.08);padding:.42rem 0}
-    table{width:100%;border-collapse:collapse;background:rgba(255,248,239,.82);border-radius:1rem;overflow:hidden}th,td{text-align:left;padding:.55rem;border-bottom:1px solid rgba(21,19,18,.08);font-size:.86rem;vertical-align:top}th{background:#151312;color:#fff8ef;position:sticky;top:92px}
-    .wide{grid-column:1/-1}.status{font-weight:800;color:#775100}.small{opacity:.65;font-size:.85rem}@media(max-width:900px){.cards,.grid{grid-template-columns:1fr 1fr}th{position:static}}@media(max-width:620px){.cards,.grid{grid-template-columns:1fr}.token input{min-width:0;width:100%}}
+    main{width:min(1320px,calc(100% - 1.2rem));margin:auto;padding:1rem 0 3rem}
+    header{display:flex;justify-content:space-between;gap:1rem;align-items:center;padding:1rem 0;position:sticky;top:0;background:rgba(246,234,219,.94);backdrop-filter:blur(16px);z-index:5}
+    h1{font-family:Georgia,serif;font-size:clamp(2.2rem,6vw,5rem);line-height:.86;margin:.2rem 0;letter-spacing:-.05em}
+    h2{margin:.2rem 0 .75rem;font-family:Georgia,serif;font-size:1.7rem;line-height:1}
+    input,select,textarea,button{border:1px solid rgba(21,19,18,.14);border-radius:999px;padding:.75rem .9rem;font:inherit;background:#fffaf2;color:#151312}
+    textarea{border-radius:1rem;min-height:120px;resize:vertical}
+    button,a.button{background:#151312;color:#fff8ef;border:0;border-radius:999px;padding:.78rem 1rem;text-decoration:none;font-weight:900;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:.35rem}
+    button.secondary,a.secondary{background:#fffaf2;color:#151312;border:1px solid rgba(21,19,18,.14)}
+    button:disabled{opacity:.55;cursor:not-allowed}
+    .token{display:flex;gap:.5rem;flex-wrap:wrap;justify-content:flex-end}.token input{min-width:260px}.token a{white-space:nowrap}
+    .card{background:rgba(255,248,239,.86);border:1px solid rgba(21,19,18,.1);border-radius:1.1rem;padding:1rem;box-shadow:0 12px 28px rgba(21,19,18,.06)}
+    .cards{display:grid;grid-template-columns:repeat(5,1fr);gap:.65rem;margin:1rem 0}.card.stat strong{display:block;font-size:2rem;line-height:1.05}.card.stat span{text-transform:capitalize;color:#6d6259;font-size:.86rem}
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin-top:.75rem}.wide{grid-column:1/-1}.two-wide{grid-column:span 2}
+    .filters{display:grid;grid-template-columns:2fr repeat(5,1fr);gap:.5rem;margin:.75rem 0}.filters input,.filters select{width:100%}
+    .pill{display:flex;justify-content:space-between;gap:1rem;border-bottom:1px solid rgba(21,19,18,.08);padding:.48rem 0}.pill:last-child{border-bottom:0}
+    .bar{display:grid;grid-template-columns:minmax(115px,1fr) 2.4fr 46px;gap:.55rem;align-items:center;margin:.55rem 0;font-size:.88rem}.bar-track{height:12px;background:#eadac5;border-radius:999px;overflow:hidden}.bar-fill{height:100%;background:#151312;border-radius:999px}
+    table{width:100%;border-collapse:collapse;background:rgba(255,248,239,.82);border-radius:1rem;overflow:hidden}th,td{text-align:left;padding:.62rem;border-bottom:1px solid rgba(21,19,18,.08);font-size:.86rem;vertical-align:top}th{background:#151312;color:#fff8ef;position:sticky;top:96px;z-index:2}
+    .table-wrap{max-height:680px;overflow:auto;border-radius:1rem;border:1px solid rgba(21,19,18,.08)}
+    .status{font-weight:800;color:#775100}.small{opacity:.68;font-size:.84rem}.tag{display:inline-block;border:1px solid rgba(21,19,18,.12);border-radius:999px;padding:.18rem .48rem;margin:.08rem;background:#fffaf2;font-size:.78rem}.good{color:#14643c;font-weight:800}.bad{color:#9b2f1f;font-weight:800}.muted{color:#786b61}
+    .actions{display:flex;gap:.5rem;flex-wrap:wrap}.privacy{background:#151312;color:#fff8ef}.privacy h2{color:#fff8ef}.privacy p{color:#f4debf}
+    @media(max-width:1050px){.cards,.grid{grid-template-columns:1fr 1fr}.two-wide{grid-column:1/-1}.filters{grid-template-columns:1fr 1fr}th{position:static}}
+    @media(max-width:660px){header{position:static;display:block}.token{justify-content:flex-start}.token input{min-width:0;width:100%}.cards,.grid,.filters{grid-template-columns:1fr}.card.stat strong{font-size:1.7rem}}
   </style>
 </head>
 <body>
   <main>
     <header>
       <div>
-        <p class="small">Private / noindex</p>
-        <h1>Trendies Data</h1>
-        <p id="status" class="status">Enter dashboard token to load categorised live submissions.</p>
+        <p class="small">Private / noindex / owner-only</p>
+        <h1>Trendies CRM</h1>
+        <p id="status" class="status">Enter your dashboard token to load live signups, partner leads and email data.</p>
       </div>
       <div class="token">
-        <input id="token" placeholder="Dashboard token" />
-        <button id="save">Load</button>
-        <a id="csv" class="button" href="#">Download CSV</a>
+        <input id="token" placeholder="Dashboard token / admin password" />
+        <button id="save" type="button">Load</button>
+        <button id="testWelcome" class="secondary" type="button">Send test welcome</button>
+        <a id="csv" class="button secondary" href="#">Download CSV</a>
+        <a class="button" href="/admin/emails.html">Broadcast emails</a>
       </div>
     </header>
 
     <section class="cards" id="totals"></section>
 
     <section class="grid">
-      <div class="card panel"><h2>Regions</h2><div id="region"></div></div>
-      <div class="card panel"><h2>People types</h2><div id="respondent_type"></div></div>
-      <div class="card panel"><h2>Partnerships</h2><div id="partnership_type"></div></div>
+      <div class="card panel"><h2>Top cities</h2><div id="cities"></div></div>
+      <div class="card panel"><h2>Top countries</h2><div id="countries"></div></div>
+      <div class="card panel"><h2>Helper types</h2><div id="helper_types"></div></div>
       <div class="card panel"><h2>Activities</h2><div id="activity_tags"></div></div>
       <div class="card panel"><h2>Safety needs</h2><div id="safety_tags"></div></div>
-      <div class="card panel"><h2>Top countries</h2><div id="countries"></div></div>
-      <div class="card panel wide"><h2>Country flag pins</h2><div id="country_pins"></div></div>
+      <div class="card panel"><h2>Email status</h2><div id="opt_ins"></div></div>
+      <div class="card panel"><h2>People types</h2><div id="respondent_type"></div></div>
+      <div class="card panel"><h2>Partnerships</h2><div id="partnership_type"></div></div>
+      <div class="card panel"><h2>Referrals</h2><div id="referrals"></div></div>
     </section>
 
-    <section class="card panel" style="margin-top:.8rem">
-      <h2>Latest categorised signups</h2>
-      <div style="overflow:auto">
+    <section class="card panel wide" style="margin-top:.8rem">
+      <div class="actions" style="justify-content:space-between;align-items:center">
+        <div>
+          <h2>Searchable signup table</h2>
+          <p class="small">Private data stays here. The public website only shows aggregate city counts.</p>
+        </div>
+        <p class="status" id="actionStatus"></p>
+      </div>
+      <div class="filters">
+        <input id="search" placeholder="Search name, email, city, notes..." />
+        <input id="countryFilter" placeholder="Country" />
+        <input id="cityFilter" placeholder="City" />
+        <select id="helperFilter"><option value="">Any helper type</option></select>
+        <select id="optInFilter"><option value="">Opt-in: any</option><option value="yes">Opted in</option><option value="no">Not opted in</option></select>
+        <select id="unsubFilter"><option value="">Unsubscribed: any</option><option value="yes">Unsubscribed</option><option value="no">Not unsubscribed</option></select>
+      </div>
+      <div class="table-wrap">
         <table>
-          <thead><tr><th>Time</th><th>Name</th><th>Email</th><th>Place</th><th>Type</th><th>AI / summary</th><th>Activities</th><th>Safety</th><th>Help / partnership</th></tr></thead>
+          <thead><tr><th>Time</th><th>Name</th><th>Email</th><th>Place</th><th>Type</th><th>Intent / AI</th><th>Wants</th><th>Safety</th><th>Email</th><th>Action</th></tr></thead>
           <tbody id="rows"></tbody>
         </table>
       </div>
     </section>
 
-    <section class="card panel" style="margin-top:.8rem">
-      <h2>Latest wall notes</h2>
-      <div id="wallNotes"></div>
+    <section class="grid">
+      <div class="card panel two-wide">
+        <h2>Partner enquiries</h2>
+        <div class="table-wrap" style="max-height:420px">
+          <table>
+            <thead><tr><th>Time</th><th>Name</th><th>Organisation</th><th>Type</th><th>Message</th></tr></thead>
+            <tbody id="partnerRows"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="card panel">
+        <h2>Partner support types</h2>
+        <div id="partner_support_types"></div>
+      </div>
+      <div class="card panel wide">
+        <h2>Country flag pins</h2>
+        <div id="country_pins"></div>
+      </div>
+      <div class="card panel wide">
+        <h2>Latest wall notes</h2>
+        <div id="wallNotes"></div>
+      </div>
+      <div class="card privacy wide">
+        <h2>Privacy reminder</h2>
+        <p>This dashboard contains private signup details. Keep the token private, do not share screenshots with names/emails visible, and use the broadcast page only for people who opted into updates and confirmed they are 18+.</p>
+      </div>
     </section>
   </main>
 
 <script>
 const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
 let token = localStorage.getItem("trendies-dashboard-token") || new URLSearchParams(location.search).get("token") || "";
+let allRows = [];
+let latestData = null;
 $("#token").value = token;
 
+function esc(v){ return String(v ?? "").replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function date(v){ return v ? new Date(v).toLocaleString() : ""; }
+function short(v,n=120){ v=String(v||""); return v.length>n ? v.slice(0,n-1)+"…" : v; }
+function tags(items){ return (items||[]).slice(0,4).map(x => `<span class="tag">${esc(x)}</span>`).join("") || "<span class='muted'>none</span>"; }
+function yesNo(v){ return v ? "<span class='good'>yes</span>" : "<span class='bad'>no</span>"; }
 function pills(items, max=10){
-  return (items || []).slice(0,max).map(x => `<div class="pill"><span>${esc(x.label || x.country || "Unknown")}</span><strong>${esc(x.count)}</strong></div>`).join("") || "<p class='small'>No data yet.</p>";
+  return (items || []).slice(0,max).map(x => `<div class="pill"><span>${esc(x.label || x.city || x.country || "Unknown")}${x.country && x.label ? `<br><span class="small">${esc(x.country)}</span>` : ""}</span><strong>${esc(x.count)}</strong></div>`).join("") || "<p class='small'>No data yet.</p>";
 }
-function esc(v){ return String(v ?? "").replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
-
-function apiPathV63(path){
-  return path;
+function bars(items, max=10){
+  const list = (items || []).slice(0,max);
+  const peak = Math.max(...list.map(x => Number(x.count || 0)), 1);
+  return list.map(x => {
+    const label = x.label || x.city || x.country || "Unknown";
+    const extra = x.country && x.label ? `, ${x.country}` : "";
+    const width = Math.max(6, Math.round((Number(x.count || 0) / peak) * 100));
+    return `<div class="bar"><span>${esc(label)}${esc(extra)}</span><div class="bar-track"><div class="bar-fill" style="width:${width}%"></div></div><strong>${esc(x.count || 0)}</strong></div>`;
+  }).join("") || "<p class='small'>No data yet.</p>";
+}
+function apiCandidates(path){
+  return [path, path.replace("/api/", "/.netlify/functions/")];
 }
 async function fetchDashboardData(token){
-  const paths = [
-    "/api/dashboard-data?token=" + encodeURIComponent(token),
-    "/.netlify/functions/dashboard-data?token=" + encodeURIComponent(token)
-  ];
   let last;
-  for(const path of paths){
+  for(const path of apiCandidates("/api/dashboard-data?token=" + encodeURIComponent(token))){
     try{
       const res = await fetch(path);
       const data = await res.json().catch(()=>({}));
@@ -91,6 +156,71 @@ async function fetchDashboardData(token){
   }
   throw last || new Error("Could not load dashboard");
 }
+async function postAdmin(path, body){
+  body.admin_secret = $("#token").value.trim();
+  let last;
+  for(const url of apiCandidates(path)){
+    try{
+      const res = await fetch(url, {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(body)});
+      const data = await res.json().catch(()=>({}));
+      if(!res.ok || !data.ok) throw new Error(data.error || `Backend returned ${res.status}`);
+      return data;
+    }catch(e){ last = e; }
+  }
+  throw last || new Error("Could not complete action");
+}
+function populateHelperFilter(rows){
+  const select = $("#helperFilter");
+  const current = select.value;
+  const values = [...new Set(rows.map(r => r.helper_type || r.respondent_type || "").filter(Boolean))].sort();
+  select.innerHTML = `<option value="">Any helper type</option>` + values.map(v => `<option>${esc(v)}</option>`).join("");
+  select.value = current;
+}
+function rowMatches(r){
+  const q = $("#search").value.trim().toLowerCase();
+  const country = $("#countryFilter").value.trim().toLowerCase();
+  const city = $("#cityFilter").value.trim().toLowerCase();
+  const helper = $("#helperFilter").value.trim().toLowerCase();
+  const opt = $("#optInFilter").value;
+  const unsub = $("#unsubFilter").value;
+  const blob = `${r.name} ${r.email} ${r.city} ${r.country} ${r.respondent_type} ${r.partnership_type} ${r.helper_type} ${r.show_up_reason} ${r.safety_needs} ${r.help_build}`.toLowerCase();
+  if(q && !blob.includes(q)) return false;
+  if(country && !String(r.country||"").toLowerCase().includes(country)) return false;
+  if(city && !String(r.city||"").toLowerCase().includes(city)) return false;
+  if(helper && !`${r.helper_type || ""} ${r.respondent_type || ""}`.toLowerCase().includes(helper)) return false;
+  if(opt === "yes" && !r.wants_updates) return false;
+  if(opt === "no" && r.wants_updates) return false;
+  if(unsub === "yes" && !r.unsubscribed_at) return false;
+  if(unsub === "no" && r.unsubscribed_at) return false;
+  return true;
+}
+function renderRows(){
+  const rows = allRows.filter(rowMatches);
+  $("#rows").innerHTML = rows.map(r => `
+    <tr>
+      <td>${esc(date(r.created_at))}</td>
+      <td><b>${esc(r.name)}</b><br><span class="small">${esc(r.social || "")}</span></td>
+      <td>${esc(r.email)}</td>
+      <td>${esc(r.city)}, ${esc(r.country)}<br><span class="small">${esc(r.region || "")}</span></td>
+      <td>${esc(r.helper_type || r.respondent_type || "")}<br><span class="small">${esc(r.partnership_type || "")}</span></td>
+      <td>${esc(r.intent_strength || "")}<br><span class="small">${esc(short(r.ai_summary || r.ai_priority || r.categorisation_source || "rules", 100))}</span></td>
+      <td>${esc(short(r.show_up_reason || "", 150))}<br>${tags(r.activity_tags)}</td>
+      <td>${esc(short(r.safety_needs || "", 140))}<br>${tags(r.safety_tags)}</td>
+      <td>opt-in ${yesNo(r.wants_updates)}<br>18+ ${yesNo(r.confirmed_18_plus)}<br><span class="small">${r.unsubscribed_at ? "unsubscribed" : (r.welcome_email_sent_at ? "welcome sent" : "welcome pending")}</span></td>
+      <td><button class="secondary resend" data-id="${esc(r.id || "")}" type="button">Resend welcome</button></td>
+    </tr>`).join("") || "<tr><td colspan='10'>No rows match those filters yet.</td></tr>";
+  $("#status").textContent = latestData ? `${rows.length} shown from ${allRows.length} recent signups. Last refreshed ${new Date(latestData.refreshed_at).toLocaleString()}.` : "Loaded.";
+}
+function renderPartners(rows){
+  $("#partnerRows").innerHTML = (rows || []).map(p => `
+    <tr>
+      <td>${esc(date(p.created_at))}</td>
+      <td><b>${esc(p.name)}</b><br><span class="small">${esc(p.email)}<br>${esc(p.city_country || "")}</span></td>
+      <td>${esc(p.organisation || "")}<br><span class="small">${esc(p.role || "")}</span></td>
+      <td>${esc(p.support_type || "")}<br><span class="small">${esc(p.status || "new")}</span></td>
+      <td>${esc(short(p.message || "", 220))}</td>
+    </tr>`).join("") || "<tr><td colspan='5'>No partner enquiries yet.</td></tr>";
+}
 async function load(){
   token = $("#token").value.trim();
   if(!token){ $("#status").textContent = "Enter dashboard token."; return; }
@@ -99,36 +229,50 @@ async function load(){
   $("#status").textContent = "Loading live data...";
   try{
     const data = await fetchDashboardData(token);
-
-    $("#status").textContent = "Live. Last refreshed " + new Date(data.refreshed_at).toLocaleString();
-    $("#totals").innerHTML = Object.entries(data.totals).map(([k,v]) => `<div class="card"><span>${k.replaceAll("_"," ")}</span><strong>${v}</strong></div>`).join("");
-
-    ["region","respondent_type","partnership_type","activity_tags","safety_tags","countries"].forEach(k => {
-      $("#" + k).innerHTML = pills(data.breakdowns[k]);
+    latestData = data;
+    allRows = data.latest_interests || [];
+    $("#totals").innerHTML = Object.entries(data.totals || {}).map(([k,v]) => `<div class="card stat"><span>${esc(k.replaceAll("_"," "))}</span><strong>${esc(v)}</strong></div>`).join("");
+    $("#cities").innerHTML = bars(data.breakdowns.cities, 12);
+    ["countries","helper_types","activity_tags","safety_tags","opt_ins","respondent_type","partnership_type","referrals","partner_support_types"].forEach(k => {
+      $("#" + k).innerHTML = k.includes("activity") || k.includes("safety") || k.includes("helper") ? bars(data.breakdowns[k], 10) : pills(data.breakdowns[k], 10);
     });
-    $("#country_pins").innerHTML = pills(data.country_pins, 18);
-
-    $("#rows").innerHTML = data.latest_interests.map(r => `
-      <tr>
-        <td>${esc(new Date(r.created_at).toLocaleString())}</td>
-        <td>${esc(r.name)}<br><span class="small">${esc(r.social)}</span></td>
-        <td>${esc(r.email)}</td>
-        <td>${esc(r.city)}, ${esc(r.country)}<br><span class="small">${esc(r.region)}</span></td>
-        <td>${esc(r.respondent_type)}<br><span class="small">${esc(r.intent_strength)}</span></td>
-        <td>${esc(r.ai_summary || "Rule-sorted signup")}<br><span class="small">${esc(r.ai_priority || r.categorisation_source || "rules")}${r.ai_tags && r.ai_tags.length ? " / " + esc(r.ai_tags.join(", ")) : ""}</span></td>
-        <td>${esc((r.activity_tags||[]).join(", "))}</td>
-        <td>${esc((r.safety_tags||[]).join(", "))}</td>
-        <td>${esc(r.help_build || r.partnership_type || "")}</td>
-      </tr>`).join("");
-
+    $("#country_pins").innerHTML = pills(data.country_pins, 24);
     $("#wallNotes").innerHTML = (data.latest_wall_notes || []).slice(0, 30).map(n => `
       <div class="pill"><span>${esc(n.note_censored || n.note || "")}<br><span class="small">${esc(n.country || "")} / ${esc(n.category || n.vibe || "wall")} / ${esc(n.status || "")}</span></span><strong>${esc(new Date(n.created_at).toLocaleDateString())}</strong></div>
     `).join("") || "<p class='small'>No wall notes yet.</p>";
+    populateHelperFilter(allRows);
+    renderRows();
+    renderPartners(data.latest_partner_enquiries || []);
   }catch(e){
     $("#status").textContent = e.message;
   }
 }
 $("#save").addEventListener("click", load);
+$("#testWelcome").addEventListener("click", async () => {
+  $("#actionStatus").textContent = "Sending test welcome to admin...";
+  try{
+    await postAdmin("/api/admin-signup-action", {action:"test_onboarding"});
+    $("#actionStatus").textContent = "Test welcome email sent.";
+  }catch(e){
+    $("#actionStatus").textContent = e.message;
+  }
+});
+document.addEventListener("click", async (event) => {
+  const button = event.target.closest(".resend");
+  if(!button) return;
+  button.disabled = true;
+  $("#actionStatus").textContent = "Resending welcome email...";
+  try{
+    await postAdmin("/api/admin-signup-action", {action:"resend_welcome", id:button.dataset.id});
+    $("#actionStatus").textContent = "Welcome email resent.";
+    await load();
+  }catch(e){
+    $("#actionStatus").textContent = e.message;
+  }finally{
+    button.disabled = false;
+  }
+});
+["search","countryFilter","cityFilter","helperFilter","optInFilter","unsubFilter"].forEach(id => $("#" + id).addEventListener("input", renderRows));
 if(token) load();
 setInterval(() => { if($("#token").value.trim()) load(); }, 30000);
 </script>
