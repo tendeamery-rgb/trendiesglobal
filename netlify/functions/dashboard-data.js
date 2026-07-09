@@ -2,8 +2,12 @@ const {ok, supabase} = require("./common");
 
 function requireToken(event){
   const supplied = (event.queryStringParameters && event.queryStringParameters.token) || "";
-  const secret = process.env.EXPORT_SECRET || "";
-  return secret && supplied && supplied === secret;
+  const secrets = [
+    process.env.EXPORT_SECRET,
+    process.env.TRENDIES_ADMIN_PASSWORD,
+    process.env.ADMIN_SECRET
+  ].filter(Boolean);
+  return !!supplied && secrets.includes(supplied);
 }
 
 async function breakdown(view, limit=20){

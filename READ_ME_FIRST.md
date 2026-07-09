@@ -2,11 +2,11 @@
 
 This is the updated clean folder to upload:
 
-`TRENDIES_GLOBAL_V83_DATA_SEO_GOOGLE_READY`
+`TRENDIES_GLOBAL_V85_SIGNUP_EMAIL_ADMIN_READY`
 
 For Netlify drag-and-drop, use:
 
-`TRENDIES_GLOBAL_V83_DATA_SEO_GOOGLE_READY.zip`
+`TRENDIES_GLOBAL_V85_SIGNUP_EMAIL_ADMIN_READY.zip`
 
 ## What is inside
 
@@ -37,6 +37,7 @@ For Netlify drag-and-drop, use:
 - Added a proper Trendies favicon and web manifest to replace the old Wix icon after Google recrawls.
 - Added a Google Sheets automation that creates a clean dataset, breakdown tabs and dashboard pie charts.
 - Added batched CSV export support so the spreadsheet can pull growing signup data safely.
+- Added automatic welcome emails, Resend contact sync, preferences, unsubscribe links and a private signups dashboard route.
 
 ## Netlify environment variables
 
@@ -46,11 +47,17 @@ Add these in Netlify:
 - `SUPABASE_SERVICE_ROLE_KEY`
 - `RESEND_API_KEY`
 - `EMAIL_FROM`
+- `TRENDIES_FROM_EMAIL` = `Trendies Global <hello@trendiesglobal.com>`
 - `APPROVAL_EMAIL` = `tende.amery@gmail.com`
+- `TRENDIES_ADMIN_EMAIL` = `tende.amery@gmail.com`
 - `APPROVAL_SECRET`
 - `EXPORT_SECRET`
+- `TRENDIES_ADMIN_PASSWORD`
+- `SITE_URL` = `https://trendiesglobal.com`
 
-Use long private random values for `APPROVAL_SECRET` and `EXPORT_SECRET`.
+Use long private random values for `APPROVAL_SECRET`, `EXPORT_SECRET` and `TRENDIES_ADMIN_PASSWORD`.
+
+`RESEND_AUDIENCE_ID` is optional/legacy. Resend's current API uses global Contacts, Segments, Topics and Broadcasts; Audiences are marked deprecated in the Resend docs. This site syncs opted-in users to Resend Contacts so you can send Broadcasts from Resend.
 
 Optional if you want AI-written summaries/priorities in the dashboard:
 
@@ -63,14 +70,14 @@ Without the optional AI variables, the site still sorts signups automatically us
 
 ## Launch steps
 
-1. Upload `TRENDIES_GLOBAL_V83_DATA_SEO_GOOGLE_READY.zip` to Netlify.
+1. Upload `TRENDIES_GLOBAL_V85_SIGNUP_EMAIL_ADMIN_READY.zip` to Netlify.
 2. Add the environment variables above.
 3. Run `SUPABASE_SETUP.sql` in Supabase.
 4. Connect `trendiesglobal.com` in Netlify as the primary domain.
 5. Add `www.trendiesglobal.com` as the secondary domain.
 6. Wait for HTTPS to activate.
 7. Test the join form, flag wall form and wall note form on the live site.
-8. Open `https://trendiesglobal.com/DATA_DASHBOARD.html` and enter your `EXPORT_SECRET`.
+8. Open `https://trendiesglobal.com/admin/signups` or `https://trendiesglobal.com/DATA_DASHBOARD.html` and enter your `EXPORT_SECRET` or `TRENDIES_ADMIN_PASSWORD`.
 9. Submit `https://trendiesglobal.com/sitemap.xml` in Google Search Console.
 10. Use `GOOGLE_SEARCH_SETUP.md` to request homepage indexing and fix the old search icon over time.
 

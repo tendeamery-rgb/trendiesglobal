@@ -15,6 +15,7 @@
   - `TRENDIES_ADMIN_EMAIL=tende.amery@gmail.com`
   - `APPROVAL_SECRET`
   - `EXPORT_SECRET`
+  - `TRENDIES_ADMIN_PASSWORD`
   - `ADMIN_SECRET`
   - `SITE_URL=https://trendiesglobal.com`
   - `WEEKLY_DIGEST_ENABLED=false`
@@ -25,6 +26,7 @@
 - In Resend:
   - Verify `trendiesglobal.com`
   - Confirm `hello@trendiesglobal.com` can send
+  - Use Resend Contacts/Broadcasts for mass email; `RESEND_AUDIENCE_ID` is optional/legacy
 - Test:
   - Join form
   - Duplicate join form with the same email
@@ -34,6 +36,7 @@
   - Country flag wall
   - Wall note form
   - Partner enquiry form
+  - `/admin/signups` dashboard route
   - `/DATA_DASHBOARD.html` CRM filters, CSV and resend-welcome button
   - `/admin/emails` audience load and test send
   - Mobile layout

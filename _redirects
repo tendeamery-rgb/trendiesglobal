@@ -2,5 +2,6 @@
 /welcome  /welcome.html  200
 /preferences  /preferences.html  200
 /unsubscribe  /unsubscribe.html  200
+/admin/signups  /admin/signups.html  200
 /admin/emails  /admin/emails.html  200
 https://www.trendiesglobal.com/*  https://trendiesglobal.com/:splat  301!

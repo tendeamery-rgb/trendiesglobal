@@ -171,7 +171,7 @@ async function run() {
   const welcomeEmail = calls.find(c => c.url === "https://api.resend.com/emails" && JSON.parse(c.options.body).to === "test@example.com");
   assert(welcomeEmail, "interest signup should send welcome email");
 
-  const adminEmail = calls.find(c => c.url === "https://api.resend.com/emails" && JSON.parse(c.options.body).to === "tende.amery@gmail.com" && JSON.parse(c.options.body).subject.includes("NEW Trendies signup"));
+  const adminEmail = calls.find(c => c.url === "https://api.resend.com/emails" && JSON.parse(c.options.body).to === "tende.amery@gmail.com" && JSON.parse(c.options.body).subject === "New Trendies signup");
   assert(adminEmail, "interest signup should send admin email");
 
   const note = await submitNote(event("POST", {note:"I want a safe picnic chapter", country:"United Kingdom", category:"friendship"}));

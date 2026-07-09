@@ -106,6 +106,9 @@ async function sendWelcomeEmail(signup, options={}){
 
 function contactProperties(signup){
   return {
+    first_name: clean(signup.first_name || firstNameFrom(signup.full_name || signup.name), 120),
+    full_name: clean(signup.full_name || signup.name, 160),
+    email: clean(signup.email, 220),
     city: clean(signup.city, 120),
     country: clean(signup.country, 120),
     helper_type: clean(signup.helper_type || signup.respondent_type, 120),
@@ -119,23 +122,27 @@ async function upsertResendContact(signup){
   if(!signup || !signup.email) return {synced:false, skipped:true};
   if(!signup.wants_updates && !signup.unsubscribed_at) return {synced:false, skipped:true};
   const names = String(signup.full_name || signup.name || "").trim().split(/\s+/).filter(Boolean);
-  const payload = {
+  const createPayload = {
     email: signup.email,
-    firstName: signup.first_name || names[0] || "",
-    lastName: names.slice(1).join(" "),
+    first_name: signup.first_name || names[0] || "",
+    last_name: names.slice(1).join(" "),
+    unsubscribed: !!signup.unsubscribed_at,
+    properties: contactProperties(signup)
+  };
+  const updatePayload = {
     unsubscribed: !!signup.unsubscribed_at,
     properties: contactProperties(signup)
   };
 
   try{
-    const updated = await resendRequest(`contacts/${encodeURIComponent(signup.email)}`, {method:"PATCH", body: payload});
+    const updated = await resendRequest(`contacts/${encodeURIComponent(signup.email)}`, {method:"PATCH", body: updatePayload});
     return {synced:true, mode:"updated", id: updated && updated.id};
   }catch(error){
     if(error.status && error.status !== 404) {
       console.error("Resend contact update failed:", error.message);
     }
     try{
-      const created = await resendRequest("contacts", {method:"POST", body: payload});
+      const created = await resendRequest("contacts", {method:"POST", body: createPayload});
       return {synced:true, mode:"created", id: created && created.id};
     }catch(createError){
       console.error("Resend contact create failed:", createError.message);

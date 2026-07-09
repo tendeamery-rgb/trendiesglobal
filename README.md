@@ -4,7 +4,7 @@ This is the clean folder for the Trendies Global launch.
 
 If you are uploading to Netlify, use the ZIP named:
 
-`TRENDIES_GLOBAL_V83_DATA_SEO_GOOGLE_READY.zip`
+`TRENDIES_GLOBAL_V85_SIGNUP_EMAIL_ADMIN_READY.zip`
 
 ## What is included
 
@@ -51,6 +51,15 @@ If you are uploading to Netlify, use the ZIP named:
 - Rebuilt the Google Sheets script so it creates a clean dataset, breakdowns and dashboard charts.
 - Added batched CSV export support for the Google Sheet so launch data can keep growing.
 - Added a private CRM dashboard, automatic welcome email, referral links, preference/unsubscribe pages, partner enquiry form and admin broadcast page.
+- Resend Audience ID is optional/legacy because Resend's current API uses Contacts/Broadcasts; opted-in users are synced to Contacts for future broadcasts.
+
+## Email and owner dashboard
+
+When someone signs up, the site lowercases and trims their email, updates the existing record if that email already exists, sends one welcome email only once, and adds opted-in people to Resend Contacts. Admin signup alerts go to `TRENDIES_ADMIN_EMAIL`.
+
+Use `/admin/signups` for the private signup dashboard. It opens the live CRM dashboard, which accepts either `EXPORT_SECRET` or `TRENDIES_ADMIN_PASSWORD`.
+
+To mass email everyone later, use the Resend Broadcast dashboard. Only email people who opted into updates and have not unsubscribed.
 
 
 ## v64 update — photo refresh + anti-overlap

@@ -202,7 +202,7 @@ $("#interestForm")?.addEventListener("submit", async (e)=>{
   try{
     const result = await postJSON("/api/submit-interest", data);
     form.reset();
-    setStatus("#interestStatus","Done — you’re in Chapter One. Taking you to the welcome page...");
+    setStatus("#interestStatus", result.message || "Done — you’re in Chapter One. Taking you to the welcome page...");
     if(result.redirect_url) window.location.href = result.redirect_url;
   }catch(err){
     setStatus("#interestStatus", err.message || "Could not submit yet.", true);

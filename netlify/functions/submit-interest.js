@@ -87,6 +87,10 @@ function categorise(body){
   return {activity_tags, safety_tags, respondent_type, partnership_type, intent_strength};
 }
 
+function truthy(value){
+  return value === true || ["true", "1", "yes", "on"].includes(String(value || "").toLowerCase());
+}
+
 function responseText(data){
   if(data && typeof data.output_text === "string") return data.output_text;
   const chunks = [];
@@ -209,7 +213,7 @@ exports.handler = async (event) => {
     const fullName = clean(b.full_name || b.name, 160);
     const email = normalizeEmail(b.email);
     const age = Number(b.age || 0);
-    const confirmed18 = !!b.confirm_18 && age >= 18;
+    const confirmed18 = (truthy(b.confirm_18) || truthy(b.confirmed_18_plus)) && age >= 18;
     if(!fullName || !email || !isValidEmail(email) || !clean(b.city,160) || !clean(b.country,160) || !confirmed18 || age > 120) {
       return ok({ok:false,error:"Please complete the required fields with a valid email and confirm you are 18+."},400);
     }
@@ -220,13 +224,14 @@ exports.handler = async (event) => {
     const existingToken = existing && existing.unsubscribe_token;
     const unsubscribeToken = existingToken || randomToken(24);
     const code = (existing && existing.referral_code) || referralCode(email);
-    const wantsUpdates = !!b.updates_permission;
+    const wantsUpdates = truthy(b.updates_permission) || truthy(b.wants_updates);
     const now = new Date().toISOString();
     const showUpReason = clean(b.what_would_make_you_show_up || b.show_up_reason,1200);
     const safetyNeeds = clean(b.what_would_make_it_feel_safe || b.safety_needs,1200);
     const helperType = clean(b.helper_type || b.help_build,300);
 
     const row = {
+      created_at: existing && existing.created_at ? existing.created_at : now,
       updated_at: now,
       name: fullName,
       full_name: fullName,
@@ -282,7 +287,7 @@ exports.handler = async (event) => {
     }
 
     let welcomeResult = {sent:false, skipped:true};
-    if(row.wants_updates && row.confirmed_18_plus && !row.unsubscribed_at && !(existing && existing.welcome_email_sent_at)) {
+    if(row.confirmed_18_plus && !row.unsubscribed_at && !(existing && existing.welcome_email_sent_at)) {
       welcomeResult = await sendWelcomeEmail({...row, id:saved.id});
       await patchSignup(saved.id, {
         welcome_email_sent_at: welcomeResult.sent ? new Date().toISOString() : null,
@@ -300,12 +305,16 @@ exports.handler = async (event) => {
     }
 
     const shouldEmail = String(process.env.SEND_INTEREST_EMAILS || "true").toLowerCase() !== "false";
+    const signupMode = existing ? "updated existing signup" : "new signup";
     const emailResult = shouldEmail
       ? await sendEmail(
-        `NEW Trendies signup — ${row.city}, ${row.country} — ${row.respondent_type}`,
+        "New Trendies signup",
         `<h2>New Trendies Global signup</h2>
+        <p><b>Signup type:</b> ${escapeHTML(signupMode)}</p>
         <p><b>${escapeHTML(row.name)}</b> (${escapeHTML(row.age)}) — ${escapeHTML(row.email)}</p>
         <p><b>Location:</b> ${escapeHTML(row.city)}, ${escapeHTML(row.country)} / ${escapeHTML(row.region)}</p>
+        <p><b>Wants updates:</b> ${row.wants_updates ? "Yes" : "No"}</p>
+        <p><b>Confirmed 18+:</b> ${row.confirmed_18_plus ? "Yes" : "No"}</p>
         <p><b>Respondent type:</b> ${escapeHTML(row.respondent_type)}</p>
         <p><b>Partnership type:</b> ${escapeHTML(row.partnership_type)}</p>
         <p><b>Intent:</b> ${escapeHTML(row.intent_strength)}</p>
@@ -313,7 +322,6 @@ exports.handler = async (event) => {
         <p><b>Safety tags:</b> ${escapeHTML(row.safety_tags.join(", "))}</p>
         <p><b>AI/source:</b> ${escapeHTML(row.categorisation_source)}${row.ai_priority ? " / " + escapeHTML(row.ai_priority) : ""}</p>
         ${row.ai_summary ? `<p><b>AI summary:</b><br/>${escapeHTML(row.ai_summary)}</p>` : ""}
-        <p><b>Wants updates:</b> ${row.wants_updates ? "Yes" : "No"}</p>
         <hr/>
         <p><b>What would make them show up?</b><br/>${escapeHTML(row.answers.show_up_reason || "")}</p>
         <p><b>Safety needs:</b><br/>${escapeHTML(row.answers.safety_needs || "")}</p>
@@ -323,9 +331,16 @@ exports.handler = async (event) => {
       : {sent:false, skipped:true};
 
     const emailStatus = welcomeResult.sent ? "sent" : (welcomeResult.error ? "issue" : "skipped");
+    const successMessage = existing
+      ? "You’re already on the list. I’ve updated your details."
+      : (welcomeResult.error
+        ? "You’re in Chapter One. Your signup was saved, but the welcome email may not have sent."
+        : "You’re in Chapter One. Check your email — your welcome note is on its way.");
     return ok({
       ok:true,
       deduped: !!existing,
+      signup_status: signupMode,
+      message: successMessage,
       id: saved.id,
       email_sent: !!(emailResult && emailResult.sent),
       admin_email_sent: !!(emailResult && emailResult.sent),

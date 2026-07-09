@@ -11,6 +11,7 @@ EMAIL_FROM=Trendies Global <hello@trendiesglobal.com>
 TRENDIES_FROM_EMAIL=Trendies Global <hello@trendiesglobal.com>
 APPROVAL_SECRET=make_a_long_random_secret
 EXPORT_SECRET=make_a_different_long_random_dashboard_token
+TRENDIES_ADMIN_PASSWORD=make_a_long_private_dashboard_password
 ADMIN_SECRET=make_a_long_private_admin_password
 SITE_URL=https://trendiesglobal.com
 WEEKLY_DIGEST_ENABLED=false
@@ -34,9 +35,12 @@ Important Resend setup:
 - Verify `trendiesglobal.com` in Resend.
 - Use a verified sender such as `Trendies Global <hello@trendiesglobal.com>`.
 - Keep `RESEND_API_KEY` only in Netlify environment variables, never in browser code.
+- `RESEND_AUDIENCE_ID` is optional/legacy. Resend's current API uses Contacts/Broadcasts; this site adds opted-in users to Resend Contacts so you can send Broadcasts manually.
+- To mass email everyone, use the Resend Broadcast dashboard. Only email people who opted into updates and have not unsubscribed.
 
 New private pages:
 - `/DATA_DASHBOARD.html` is the private CRM dashboard. Use `EXPORT_SECRET`.
+- `/admin/signups` opens the private signup dashboard. Use `EXPORT_SECRET` or `TRENDIES_ADMIN_PASSWORD`.
 - `/admin/emails` is the private broadcast page. Use `ADMIN_SECRET` or `EXPORT_SECRET`.
 - `/preferences?token=...` lets users change email categories.
 - `/unsubscribe?token=...` unsubscribes users.
@@ -81,6 +85,7 @@ Required environment variables:
 - `APPROVAL_EMAIL=tende.amery@gmail.com`
 - `APPROVAL_SECRET` choose a long private random value for request hashing
 - `EXPORT_SECRET` choose a long private password/token
+- `TRENDIES_ADMIN_PASSWORD` choose a long private password for `/admin/signups`
 
 ## Domain setup
 

@@ -114,30 +114,13 @@ async function sendBatchEmails(messages, required=false){
   }
 }
 async function sendEmail(subject, html, options={}){
-  const required = !!options.required;
-  const to = process.env.APPROVAL_EMAIL || adminEmail();
-  const from = fromEmail();
-  if(!process.env.RESEND_API_KEY || !from) {
-    const message = !process.env.RESEND_API_KEY ? "RESEND_API_KEY env var missing" : "TRENDIES_FROM_EMAIL or EMAIL_FROM env var missing";
-    if(required) throw new Error(message);
-    console.error(message);
-    return {sent:false};
-  }
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), Number(process.env.EMAIL_TIMEOUT_MS || 8000));
-  let res;
-  try{
-    res = await fetch("https://api.resend.com/emails", {method:"POST", signal:controller.signal, headers:{Authorization:`Bearer ${process.env.RESEND_API_KEY}`,"Content-Type":"application/json"}, body:JSON.stringify({from, to, subject, html})});
-  }finally{
-    clearTimeout(timeout);
-  }
-  if(!res.ok) {
-    const message = `Resend email failed: ${res.status} ${await res.text()}`;
-    if(required) throw new Error(message);
-    console.error(message);
-    return {sent:false};
-  }
-  return {sent:true};
+  return sendEmailTo({
+    to: options.to || adminEmail(),
+    subject,
+    html,
+    text: options.text,
+    required: !!options.required
+  });
 }
 module.exports = {
   headers,
