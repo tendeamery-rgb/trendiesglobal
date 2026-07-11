@@ -52,6 +52,7 @@ If you are uploading to Netlify, use the ZIP named:
 - Added batched CSV export support for the Google Sheet so launch data can keep growing.
 - Added a private CRM dashboard, automatic welcome email, referral links, preference/unsubscribe pages, partner enquiry form and admin broadcast page.
 - Resend Audience ID is optional/legacy because Resend's current API uses Contacts/Broadcasts; opted-in users are synced to Contacts for future broadcasts.
+- Added `OWNER_ADMIN_EMAIL_AI_GUIDE.md` for admin password, OpenAI categorisation and bulk email steps.
 
 ## Email and owner dashboard
 
@@ -59,7 +60,7 @@ When someone signs up, the site lowercases and trims their email, updates the ex
 
 Use `/admin/signups` for the private signup dashboard. It opens the live CRM dashboard, which accepts either `EXPORT_SECRET` or `TRENDIES_ADMIN_PASSWORD`.
 
-To mass email everyone later, use the Resend Broadcast dashboard. Only email people who opted into updates and have not unsubscribed.
+To mass email everyone later, open `/admin/emails`, load the eligible audience, send a test to yourself, then type `SEND` to confirm. You can also use the Resend Broadcast dashboard for future newsletters. Only email people who opted into updates and have not unsubscribed.
 
 
 ## v64 update — photo refresh + anti-overlap

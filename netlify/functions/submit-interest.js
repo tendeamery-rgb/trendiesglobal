@@ -140,7 +140,7 @@ async function aiCategorise(body, ruleCategories){
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        model: process.env.OPENAI_CATEGORISATION_MODEL || "gpt-5.4-mini",
+        model: process.env.OPENAI_CATEGORISATION_MODEL || "gpt-5.6-luna",
         input: [
           {
             role: "system",

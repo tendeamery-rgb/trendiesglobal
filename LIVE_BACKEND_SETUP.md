@@ -18,7 +18,7 @@ WEEKLY_DIGEST_ENABLED=false
 
 # Optional AI summaries for the private dashboard
 OPENAI_API_KEY=your_openai_api_key
-OPENAI_CATEGORISATION_MODEL=gpt-5.4-mini
+OPENAI_CATEGORISATION_MODEL=gpt-5.6-luna
 AI_TIMEOUT_MS=5000
 
 # Optional after Google Sheets is set up
@@ -41,7 +41,7 @@ Important Resend setup:
 New private pages:
 - `/DATA_DASHBOARD.html` is the private CRM dashboard. Use `EXPORT_SECRET`.
 - `/admin/signups` opens the private signup dashboard. Use `EXPORT_SECRET` or `TRENDIES_ADMIN_PASSWORD`.
-- `/admin/emails` is the private broadcast page. Use `ADMIN_SECRET` or `EXPORT_SECRET`.
+- `/admin/emails` is the private broadcast page. Use `TRENDIES_ADMIN_PASSWORD`, `ADMIN_SECRET` or `EXPORT_SECRET`.
 - `/preferences?token=...` lets users change email categories.
 - `/unsubscribe?token=...` unsubscribes users.
 - `/welcome?token=...` is the post-signup success page.

@@ -53,20 +53,25 @@ Add these in Netlify:
 - `APPROVAL_SECRET`
 - `EXPORT_SECRET`
 - `TRENDIES_ADMIN_PASSWORD`
+- `ADMIN_SECRET`
 - `SITE_URL` = `https://trendiesglobal.com`
 
-Use long private random values for `APPROVAL_SECRET`, `EXPORT_SECRET` and `TRENDIES_ADMIN_PASSWORD`.
+Use long private random values for `APPROVAL_SECRET`, `EXPORT_SECRET`, `TRENDIES_ADMIN_PASSWORD` and `ADMIN_SECRET`.
+
+You make the admin password yourself. It is not a GitHub password, Netlify password or Resend password. Put the same long private password in `TRENDIES_ADMIN_PASSWORD` and `ADMIN_SECRET` if you want one owner password for the private dashboard and bulk email page.
 
 `RESEND_AUDIENCE_ID` is optional/legacy. Resend's current API uses global Contacts, Segments, Topics and Broadcasts; Audiences are marked deprecated in the Resend docs. This site syncs opted-in users to Resend Contacts so you can send Broadcasts from Resend.
 
 Optional if you want AI-written summaries/priorities in the dashboard:
 
 - `OPENAI_API_KEY`
-- `OPENAI_CATEGORISATION_MODEL` = `gpt-5.4-mini`
+- `OPENAI_CATEGORISATION_MODEL` = `gpt-5.6-luna`
 - `AI_TIMEOUT_MS` = `5000`
 - `SEND_INTEREST_EMAILS=false` only if you want to stop routine signup emails after setting up the spreadsheet
 
 Without the optional AI variables, the site still sorts signups automatically using the built-in launch categories.
+
+Read `OWNER_ADMIN_EMAIL_AI_GUIDE.md` for the beginner steps to create the admin password, add the OpenAI key, use AI categorisation and send one bulk email to everyone who opted in.
 
 ## Launch steps
 

@@ -194,7 +194,7 @@ OPENAI_API_KEY
 Recommended optional AI settings:
 
 ```txt
-OPENAI_CATEGORISATION_MODEL=gpt-5.4-mini
+OPENAI_CATEGORISATION_MODEL=gpt-5.6-luna
 AI_TIMEOUT_MS=5000
 ```
 

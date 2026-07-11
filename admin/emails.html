@@ -39,7 +39,7 @@
       <div>
         <section class="card">
           <h2>Audience</h2>
-          <label>Admin password / dashboard token <input id="adminSecret" placeholder="ADMIN_SECRET or EXPORT_SECRET" /></label>
+          <label>Admin password / dashboard token <input id="adminSecret" placeholder="TRENDIES_ADMIN_PASSWORD, ADMIN_SECRET or EXPORT_SECRET" /></label>
           <div class="two">
             <label>Country filter <input id="country" placeholder="Optional" /></label>
             <label>City filter <input id="city" placeholder="Optional" /></label>
@@ -102,6 +102,36 @@
 const $ = s => document.querySelector(s);
 const saved = localStorage.getItem("trendies-dashboard-token") || "";
 $("#adminSecret").value = saved;
+const defaultOnboardingEmail = {
+  subject: "Welcome to Chapter One",
+  previewText: "You are on the early Trendies Global list. Here is what happens next.",
+  body: `You are officially part of Chapter One of Trendies Global.
+
+This started from a simple feeling: so many of us want our coming-of-age chapter, but we do not want to do it alone. We want the picnic, the walk through the city, the card games, the music, the golden hour, the new friends, and the slightly terrifying but beautiful feeling of saying yes to life again.
+
+Right now, Trendies is still idea-stage, which is why your signup matters. Every response helps show where the first chapters could begin, what people would actually show up for, and what would make it feel safe.
+
+A few things to know:
+You are not buying a ticket.
+You are not committing to anything.
+You are helping shape what Chapter One becomes.
+
+For now:
+Follow the Instagram channel for updates.
+Invite one friend who would understand the vision.
+Keep an eye out for first city interest, creative opportunities, and small safe public plans.
+
+The aim is simple: low-pressure, public, warm plans that make it easier to make new friends, expand your circle, and live a little more fully.
+
+Welcome to Chapter One.`,
+  ctaLabel: "Join the Instagram channel",
+  ctaUrl: "https://www.instagram.com/channel/AbYv47ILon7Ws8HJ/"
+};
+$("#subject").value = defaultOnboardingEmail.subject;
+$("#previewText").value = defaultOnboardingEmail.previewText;
+$("#body").value = defaultOnboardingEmail.body;
+$("#ctaLabel").value = defaultOnboardingEmail.ctaLabel;
+$("#ctaUrl").value = defaultOnboardingEmail.ctaUrl;
 function esc(v){ return String(v ?? "").replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
 function filters(){
   return {
@@ -185,6 +215,7 @@ $("#sendReal").addEventListener("click", async () => {
     $("#sendReal").disabled = false;
   }
 });
+renderPreview();
 </script>
 </body>
 </html>

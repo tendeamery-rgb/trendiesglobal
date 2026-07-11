@@ -21,7 +21,7 @@
   - `WEEKLY_DIGEST_ENABLED=false`
 - Optional for AI summaries in the private dashboard:
   - `OPENAI_API_KEY`
-  - `OPENAI_CATEGORISATION_MODEL=gpt-5.4-mini`
+  - `OPENAI_CATEGORISATION_MODEL=gpt-5.6-luna`
   - `AI_TIMEOUT_MS=5000`
 - In Resend:
   - Verify `trendiesglobal.com`
@@ -51,7 +51,7 @@
 - Updated the Google Sheets automation to create `Interest Forms`, `Clean Dataset`, `Breakdowns` and `Dashboard` tabs.
 - Added dashboard pie charts for signup type, region, intent and activity interests.
 - Added batched CSV export support for larger signup volume.
-- Changed the default optional OpenAI categorisation model to `gpt-5.4-mini` for lower cost and latency.
+- Updated the default optional OpenAI categorisation model to `gpt-5.6-luna`.
 
 ## v84 email CRM update
 - Interest signups now dedupe by lower-case email.
