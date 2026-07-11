@@ -126,6 +126,20 @@ This draft is now prefilled inside:
 https://trendiesglobal.com/admin/emails
 ```
 
+The private email page also has four visual templates:
+
+- Onboarding
+- City update
+- Creative call
+- Partner note
+
+Each one follows the same simple structure:
+
+1. Warm hello
+2. Short main note
+3. One clear action
+4. Safe close with automatic preferences and unsubscribe links
+
 ## 5. How to bulk email everyone
 
 Use the private Trendies email page first because it already filters for safer recipients.
@@ -186,4 +200,3 @@ After adding the Netlify variables, trigger a new deploy in Netlify, then test:
 9. Click `Send test to me`.
 
 If OpenAI categorisation is active, new rows should start showing `ai_summary`, `ai_priority` and `ai_tags`.
-

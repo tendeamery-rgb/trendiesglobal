@@ -44,23 +44,49 @@ function referralLink(code){
   return code ? `${siteUrl()}/?ref=${encodeURIComponent(code)}` : "";
 }
 
+function emailButton(label, url){
+  if(!label || !url) return "";
+  return `<p style="margin:24px 0 4px;">
+    <a href="${escapeHTML(url)}" style="display:inline-block;background:#15110f;color:#fff9ef;text-decoration:none;border-radius:999px;padding:13px 18px;font-weight:900;letter-spacing:.01em;">
+      ${escapeHTML(label)}
+    </a>
+  </p>`;
+}
+
 function emailShell({preview="", body="", token=""}){
   return `<!doctype html>
   <html>
-    <body style="margin:0;background:#fff9ef;color:#15110f;font-family:Inter,Arial,sans-serif;">
+    <body style="margin:0;background:#f6eadb;color:#15110f;font-family:Inter,Arial,sans-serif;">
       <div style="display:none;max-height:0;overflow:hidden;">${escapeHTML(preview)}</div>
-      <main style="max-width:640px;margin:auto;padding:28px 20px;">
-        <div style="border:1px solid #ead8ba;border-radius:22px;background:#ffffff;padding:28px;box-shadow:0 18px 48px rgba(21,17,15,.08);">
-          <p style="letter-spacing:.12em;text-transform:uppercase;font-size:12px;font-weight:800;color:#2f6f8f;margin:0 0 18px;">Trendies Global</p>
-          ${body}
-          <hr style="border:0;border-top:1px solid #ead8ba;margin:26px 0;" />
-          <p style="font-size:13px;color:#6f6257;line-height:1.55;margin:0;">
-            You can update your preferences or unsubscribe at any time:
-            <a href="${preferencesUrl(token)}" style="color:#2f6f8f;">preferences</a> /
-            <a href="${unsubscribeUrl(token)}" style="color:#2f6f8f;">unsubscribe</a>.
-          </p>
-        </div>
-      </main>
+      <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#f6eadb;margin:0;padding:0;">
+        <tr>
+          <td align="center" style="padding:28px 14px;">
+            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:680px;border-collapse:separate;border-spacing:0;">
+              <tr>
+                <td style="background:#15110f;color:#fff9ef;border-radius:24px 24px 0 0;padding:22px 26px;text-align:left;">
+                  <p style="letter-spacing:.16em;text-transform:uppercase;font-size:12px;font-weight:900;color:#9fd4e9;margin:0 0 8px;">Trendies Global</p>
+                  <p style="font-family:Georgia,serif;font-size:28px;line-height:1;margin:0;">Chapter One</p>
+                </td>
+              </tr>
+              <tr>
+                <td style="border-left:1px solid #ead8ba;border-right:1px solid #ead8ba;background:#fffaf2;padding:30px 26px;font-size:16px;line-height:1.62;">
+                  ${body}
+                </td>
+              </tr>
+              <tr>
+                <td style="border:1px solid #ead8ba;border-top:0;border-radius:0 0 24px 24px;background:#fff3df;padding:20px 26px;">
+                  <p style="font-size:13px;color:#6f6257;line-height:1.55;margin:0 0 8px;">
+                    You can update your preferences or unsubscribe at any time:
+                    <a href="${preferencesUrl(token)}" style="color:#2f6f8f;">preferences</a> /
+                    <a href="${unsubscribeUrl(token)}" style="color:#2f6f8f;">unsubscribe</a>.
+                  </p>
+                  <p style="font-size:12px;color:#8a7a6f;margin:0;">Trendies Global. Safe, public, low-pressure plans for Chapter One.</p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
     </body>
   </html>`;
 }
@@ -70,23 +96,24 @@ function welcomeEmail(signup){
   const ref = referralLink(signup.referral_code);
   const preferences = preferencesUrl(signup.unsubscribe_token);
   const body = `
+    <p style="letter-spacing:.12em;text-transform:uppercase;font-size:12px;font-weight:900;color:#2f6f8f;margin:0 0 12px;">You are in</p>
     <h1 style="font-family:Georgia,serif;font-size:38px;line-height:.98;margin:0 0 18px;">Welcome to Chapter One.</h1>
-    <p>Hey ${first},</p>
-    <p>You are officially on the early Trendies Global interest list.</p>
-    <p>Trendies started with a simple feeling: so many of us want our coming-of-age chapter, but we do not want to do it alone. We want the picnic, the walk through the city, the card games, the music, the golden hour, the new friends, the slightly terrifying but beautiful feeling of saying yes to life again.</p>
-    <p>This is still early, but that is what makes it exciting. Chapter One is being shaped by the people who sign up: where you are, what you would actually show up for, and what would make it feel safe.</p>
-    <p>A few things to know:</p>
-    <ul>
+    <p style="margin:0 0 14px;">Hey ${first},</p>
+    <p style="margin:0 0 14px;">You are officially on the early Trendies Global interest list.</p>
+    <p style="margin:0 0 14px;">Trendies started with a simple feeling: so many of us want our coming-of-age chapter, but we do not want to do it alone. We want the picnic, the walk through the city, the card games, the music, the golden hour, the new friends, the slightly terrifying but beautiful feeling of saying yes to life again.</p>
+    <p style="margin:0 0 14px;">This is still early, but that is what makes it exciting. Chapter One is being shaped by the people who sign up: where you are, what you would actually show up for, and what would make it feel safe.</p>
+    <p style="margin:18px 0 8px;"><b>A few things to know:</b></p>
+    <ul style="margin-top:0;padding-left:20px;">
       <li>You are not buying a ticket.</li>
       <li>You are not committing to anything.</li>
       <li>You are simply helping show where the first Trendies chapters could begin.</li>
     </ul>
-    <p>For now, follow along, invite a friend who would understand the vision, and keep an eye out for updates about first meetups, city interest, creative opportunities, and ways to help build this.</p>
-    <p>The aim is simple: safe, public, low-pressure plans that make it easier to meet people who also want to live a little more fully.</p>
+    <p style="margin:0 0 14px;">For now, follow along, invite a friend who would understand the vision, and keep an eye out for updates about first meetups, city interest, creative opportunities, and ways to help build this.</p>
+    <p style="margin:0 0 14px;">The aim is simple: safe, public, low-pressure plans that make it easier to meet people who also want to live a little more fully.</p>
     ${ref ? `<p><b>Invite one friend into Chapter One:</b><br/><a href="${ref}" style="color:#2f6f8f;">${escapeHTML(ref)}</a></p>` : ""}
-    <p>Welcome to Chapter One.</p>
-    <p>Stay trendy,<br/>Tende<br/>Trendies Global</p>
-    <p><b>P.S.</b> You can update your preferences or unsubscribe at any time here:<br/><a href="${preferences}" style="color:#2f6f8f;">${preferences}</a></p>
+    <p style="margin:18px 0 14px;">Welcome to Chapter One.</p>
+    <p style="margin:0 0 14px;">Stay trendy,<br/>Tende<br/>Trendies Global</p>
+    <p style="margin:0;"><b>P.S.</b> You can update your preferences or unsubscribe at any time here:<br/><a href="${preferences}" style="color:#2f6f8f;">${preferences}</a></p>
   `;
   return {
     subject: "Welcome to Chapter One 🌍",
@@ -153,9 +180,7 @@ async function upsertResendContact(signup){
 
 function broadcastEmail({subject, previewText, body, ctaLabel, ctaUrl, signup}){
   const safeBody = escapeHTML(body).replace(/\n/g, "<br/>");
-  const cta = ctaLabel && ctaUrl
-    ? `<p style="margin:24px 0;"><a href="${escapeHTML(ctaUrl)}" style="display:inline-block;background:#15110f;color:#fff9ef;text-decoration:none;border-radius:999px;padding:12px 18px;font-weight:800;">${escapeHTML(ctaLabel)}</a></p>`
-    : "";
+  const cta = emailButton(ctaLabel, ctaUrl);
   return {
     from: fromEmail(),
     to: [signup.email],
@@ -164,11 +189,14 @@ function broadcastEmail({subject, previewText, body, ctaLabel, ctaUrl, signup}){
       preview: previewText,
       token: signup.unsubscribe_token,
       body: `
+        <p style="letter-spacing:.12em;text-transform:uppercase;font-size:12px;font-weight:900;color:#2f6f8f;margin:0 0 12px;">Trendies update</p>
         <h1 style="font-family:Georgia,serif;font-size:34px;line-height:1;margin:0 0 18px;">${escapeHTML(subject)}</h1>
-        <p>Hey ${escapeHTML(signup.first_name || firstNameFrom(signup.full_name || signup.name))},</p>
-        <p>${safeBody}</p>
+        <p style="margin:0 0 14px;">Hey ${escapeHTML(signup.first_name || firstNameFrom(signup.full_name || signup.name))},</p>
+        <div style="background:#ffffff;border:1px solid #ead8ba;border-radius:18px;padding:18px;margin:0 0 18px;">
+          <p style="margin:0;">${safeBody}</p>
+        </div>
         ${cta}
-        <p>Stay trendy,<br/>Tende<br/>Trendies Global</p>
+        <p style="margin:22px 0 0;">Stay trendy,<br/>Tende<br/>Trendies Global</p>
       `
     })
   };
